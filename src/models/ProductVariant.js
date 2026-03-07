@@ -40,26 +40,26 @@ const ProductVariant = sequelize.define('ProductVariant', {
     type: DataTypes.DECIMAL(8, 2),
     allowNull: true
   },
-  size: {
-    type: DataTypes.STRING(20),
-    allowNull: true
+  size_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'sizes',
+      key: 'id'
+    }
   },
-  color: {
-    type: DataTypes.STRING(50),
-    allowNull: true
+  color_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'colors',
+      key: 'id'
+    }
   },
-  color_code: {
-    type: DataTypes.STRING(7),
-    allowNull: true
-  },
-  image_url: {
-    type: DataTypes.STRING(255),
-    allowNull: true
-  },
-  position: {
+  stock_quantity: {
     type: DataTypes.INTEGER,
     defaultValue: 0
-  }
+  },
 }, {
   tableName: 'product_variants',
   timestamps: true,

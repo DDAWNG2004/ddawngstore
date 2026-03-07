@@ -69,14 +69,6 @@
                                         <span>Đơn hàng</span>
                                     </div>
                                 </a>
-                                <a href="/customer/wishlist" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                    <div class="flex items-center space-x-2">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                                        </svg>
-                                        <span>Yêu thích</span>
-                                    </div>
-                                </a>
                                 <a href="/customer/settings" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                     <div class="flex items-center space-x-2">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -87,16 +79,14 @@
                                     </div>
                                 </a>
                                 <hr class="my-1">
-                                <form action="/customer/logout" method="POST">
-                                    <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
-                                        <div class="flex items-center space-x-2">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4 4m4-4H3m4 4v-4m0 4l4-4m-4 4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                            </svg>
-                                            <span>Đăng xuất</span>
-                                        </div>
-                                    </button>
-                                </form>
+                                <a href="/customer/logout" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                                    <div class="flex items-center space-x-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                                        </svg>
+                                        <span>Đăng xuất</span>
+                                    </div>
+                                </a>
                             </div>
                         </div>
                     <% } else { %>
@@ -126,7 +116,7 @@
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
-                        <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center cart-count leading-none" style="display: none;">0</span>
+                        <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center cart-count leading-none" style="display: none; align-items: center; justify-content: center; text-align: center; line-height: 1.25;">0</span>
                     </a>
                 </div>
             </div>

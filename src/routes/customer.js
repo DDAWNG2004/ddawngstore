@@ -218,10 +218,11 @@ router.get('/orders', async (req, res) => {
     
     try {
         const [orders] = await req.sequelize.query(`
-            SELECT o.*, oi.product_name, oi.quantity, oi.price, oi.image_url
+            SELECT o.*, COUNT(oi.id) as item_count
             FROM orders o
             LEFT JOIN order_items oi ON o.id = oi.order_id
             WHERE o.user_id = ? 
+            GROUP BY o.id
             ORDER BY o.created_at DESC
         `, {
             replacements: [req.session.customerId]
@@ -264,32 +265,42 @@ router.get('/settings', async (req, res) => {
     }
 });
 
-// Customer Wishlist
-router.get('/wishlist', async (req, res) => {
+// Update Customer Profile
+router.post('/profile', async (req, res) => {
     if (!req.session || !req.session.customerId) {
         return res.redirect('/customer/login');
     }
     
     try {
-        // Get customer wishlist items
-        const [wishlistItems] = await req.sequelize.query(`
-            SELECT w.*, p.name, p.price, pi.image_url
-            FROM wishlist w
-            LEFT JOIN products p ON w.product_id = p.id
-            LEFT JOIN product_images pi ON p.id = pi.product_id AND pi.is_primary = 1
-            WHERE w.user_id = ?
-            ORDER BY w.created_at DESC
+        const { fullName, phone, address } = req.body;
+        
+        // Update customer information
+        await req.sequelize.query(`
+            UPDATE users 
+            SET full_name = ?, phone = ?, address = ?, updated_at = NOW()
+            WHERE id = ? AND role = 'user'
         `, {
-            replacements: [req.session.customerId]
+            replacements: [fullName, phone, address, req.session.customerId]
         });
         
-        res.render('customer-wishlist', {
-            wishlistItems: wishlistItems || []
-        });
+        // Update session name
+        req.session.customerName = fullName;
+        
+        res.redirect('/customer/profile?success=1');
     } catch (error) {
-        console.error('Error loading customer wishlist:', error);
-        res.status(500).render('error', { message: 'Lỗi khi tải danh sách yêu thích' });
+        console.error('Error updating customer profile:', error);
+        res.status(500).render('error', { message: 'Lỗi khi cập nhật thông tin' });
     }
+});
+
+// Customer Logout
+router.get('/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Logout error:', err);
+        }
+        res.redirect('/');
+    });
 });
 
 module.exports = router;

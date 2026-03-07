@@ -45,7 +45,7 @@ const Product = sequelize.define('Product', {
     type: DataTypes.BOOLEAN,
     defaultValue: true
   },
-  quantity: {
+  stock_quantity: {
     type: DataTypes.INTEGER,
     defaultValue: 0
   },

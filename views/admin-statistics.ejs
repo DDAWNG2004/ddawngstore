@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thống kê - DDAWNG Store Admin</title>
+    <title>Dashboard - DDAWNG Store Admin</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -16,11 +16,10 @@
                 <div class="flex items-center">
                     <h1 class="text-2xl font-bold text-indigo-600">DDAWNG Admin</h1>
                     <nav class="hidden md:flex space-x-8 ml-10">
-                        <a href="/admin/dashboard" class="text-gray-700 hover:text-indigo-600">Dashboard</a>
+                        <a href="/admin/dashboard" class="text-indigo-600 border-b-2 border-indigo-500 pb-4">Dashboard</a>
                         <a href="/admin/products" class="text-gray-700 hover:text-indigo-600">Sản phẩm</a>
                         <a href="/admin/orders" class="text-gray-700 hover:text-indigo-600">Đơn hàng</a>
                         <a href="/admin/customers" class="text-gray-700 hover:text-indigo-600">Khách hàng</a>
-                        <a href="/admin/statistics" class="text-indigo-600 border-b-2 border-indigo-500 pb-4">Thống kê</a>
                     </nav>
                 </div>
                 <div class="flex items-center space-x-4">
@@ -51,7 +50,7 @@
         <!-- Header -->
         <div class="sm:flex sm:items-center">
             <div class="sm:flex-auto">
-                <h1 class="text-2xl font-bold leading-tight text-gray-900 sm:text-3xl sm:truncate">Thống kê</h1>
+                <h1 class="text-2xl font-bold leading-tight text-gray-900 sm:text-3xl sm:truncate">Dashboard</h1>
             </div>
             <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
                 <div class="flex space-x-3">
@@ -78,13 +77,19 @@
                     <div class="flex items-center">
                         <div class="flex-shrink-0 bg-indigo-500 rounded-md p-3">
                             <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0H4a4 4 0 00-8 0v4M16 11l-4 4M12 8a4 4 0 100-8 0H4a4 4 0 100-8 0v4M12 8l-4 4"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 8h3v2H9m0 0v2m0-2h3m-3 0v2m0-2H6a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-8a2 2 0 00-2-2h-1m-6 0a2 2 0 00-2 2v8A2 2 0 004 20h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8m0 0h16m-6 0v4m6 0v-4"/>
                             </svg>
                         </div>
                         <div class="ml-5 w-0 flex-1">
                             <dl>
                                 <dt class="text-sm font-medium text-gray-500 truncate">Tổng doanh thu</dt>
-                                <dd class="text-lg font-medium text-gray-900">₫ 125,234,567</dd>
+                                <dd class="text-lg font-medium text-gray-900">
+    <% if (monthlySales && monthlySales.length > 0) { %>
+        <%= Number(monthlySales.reduce((sum, sale) => sum + Number(sale.total_sales), 0)).toLocaleString('vi-VN') %>đ
+    <% } else { %>
+        0đ
+    <% } %>
+</dd>
                             </dl>
                         </div>
                     </div>
@@ -96,13 +101,19 @@
                     <div class="flex items-center">
                         <div class="flex-shrink-0 bg-green-500 rounded-md p-3">
                             <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2m0 0l4-4m6 2a2 2 0 002-2h-4a2 2 0 00-2-2v-4a1 1 0 011-1h-4a1 1 0 011-1v-1a1 1 0 110-2h-1v1a1 1 0 110 2h3a2 2 0 002 2z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                             </svg>
                         </div>
                         <div class="ml-5 w-0 flex-1">
                             <dl>
                                 <dt class="text-sm font-medium text-gray-500 truncate">Đơn hàng mới</dt>
-                                <dd class="text-lg font-medium text-gray-900">234</dd>
+                                <dd class="text-lg font-medium text-gray-900">
+    <% if (recentOrders && recentOrders.length > 0) { %>
+        <%= recentOrders.length %>
+    <% } else { %>
+        0
+    <% } %>
+</dd>
                             </dl>
                         </div>
                     </div>
@@ -114,13 +125,19 @@
                     <div class="flex items-center">
                         <div class="flex-shrink-0 bg-yellow-500 rounded-md p-3">
                             <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4m0 0l8 4m-8-4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
                             </svg>
                         </div>
                         <div class="ml-5 w-0 flex-1">
                             <dl>
                                 <dt class="text-sm font-medium text-gray-500 truncate">Sản phẩm bán chạy</dt>
-                                <dd class="text-lg font-medium text-gray-900">Váy hoa nhí</dd>
+                                <dd class="text-lg font-medium text-gray-900">
+    <% if (topProducts && topProducts.length > 0) { %>
+        <%= topProducts[0].name %>
+    <% } else { %>
+        Chưa có sản phẩm
+    <% } %>
+</dd>
                             </dl>
                         </div>
                     </div>
@@ -132,13 +149,13 @@
                     <div class="flex items-center">
                         <div class="flex-shrink-0 bg-red-500 rounded-md p-3">
                             <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 0l-4-4m4 4v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                             </svg>
                         </div>
                         <div class="ml-5 w-0 flex-1">
                             <dl>
                                 <dt class="text-sm font-medium text-gray-500 truncate">Khách hàng mới</dt>
-                                <dd class="text-lg font-medium text-gray-900">45</dd>
+                                <dd class="text-lg font-medium text-gray-900"><%= stats.customers || 0 %></dd>
                             </dl>
                         </div>
                     </div>
@@ -184,19 +201,23 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
+                        <% if (recentOrders && recentOrders.length > 0) { %>
+                            <% recentOrders.forEach(order => { %>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#<%= order.id %></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= order.customer_name || 'Khách vãng lai' %></td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><%= Number(order.total_amount).toLocaleString('vi-VN') %>đ</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= new Date(order.created_at).toLocaleDateString('vi-VN') %></td>
+                                </tr>
+                            <% }); %>
+                        <% } else { %>
                             <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#DH001</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Nguyễn Văn A</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">1.299.000đ</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">25/12/2024</td>
+                                <td colspan="4" class="px-6 py-12 text-center text-gray-500">
+                                    Chưa có đơn hàng nào
+                                </td>
                             </tr>
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#DH002</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Trần Thị B</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">599.000đ</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">25/12/2024</td>
-                            </tr>
-                        </tbody>
+                        <% } %>
+                    </tbody>
                     </table>
                 </div>
             </div>
@@ -206,13 +227,18 @@
     <script>
         // Revenue Chart
         const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        const monthlySalesData = <%- JSON.stringify(monthlySales || []) %>;
+        
         new Chart(revenueCtx, {
             type: 'line',
             data: {
-                labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6'],
+                labels: monthlySalesData.map(sale => {
+                    const [year, month] = sale.month.split('-');
+                    return `Tháng ${parseInt(month)}/${year}`;
+                }).reverse(),
                 datasets: [{
                     label: 'Doanh thu',
-                    data: [12000000, 15000000, 18000000, 22000000, 19000000, 25000000],
+                    data: monthlySalesData.map(sale => Number(sale.total_sales)).reverse(),
                     borderColor: 'rgb(99, 102, 241)',
                     backgroundColor: 'rgba(99, 102, 241, 0.1)',
                     tension: 0.4
@@ -241,18 +267,26 @@
 
         // Sales Chart
         const salesCtx = document.getElementById('salesChart').getContext('2d');
+        const topProductsData = <%- JSON.stringify(topProducts || []) %>;
+        
         new Chart(salesCtx, {
             type: 'bar',
             data: {
-                labels: ['Váy hoa nhí', 'Áo sơ mi trắng', 'Quần jeans slim', 'Đầm công sở'],
+                labels: topProductsData.map(product => product.name),
                 datasets: [{
                     label: 'Số lượng bán',
-                    data: [45, 38, 32, 28],
+                    data: topProductsData.map(product => Number(product.total_sold)),
                     backgroundColor: [
                         'rgba(236, 72, 153, 0.8)',
                         'rgba(59, 130, 246, 0.8)',
                         'rgba(34, 197, 94, 0.8)',
-                        'rgba(251, 146, 60, 0.8)'
+                        'rgba(251, 146, 60, 0.8)',
+                        'rgba(147, 51, 234, 0.8)',
+                        'rgba(244, 63, 94, 0.8)',
+                        'rgba(34, 197, 94, 0.8)',
+                        'rgba(251, 146, 60, 0.8)',
+                        'rgba(236, 72, 153, 0.8)',
+                        'rgba(59, 130, 246, 0.8)'
                     ]
                 }]
             },

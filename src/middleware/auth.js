@@ -16,13 +16,13 @@ const adminAuth = (req, res, next) => {
     console.log('🔐 Admin auth check for:', req.url);
     console.log('📊 Session data:', {
         hasSession: !!req.session,
-        adminId: req.session?.adminId,
-        adminName: req.session?.adminName,
-        isAdmin: req.session?.isAdmin,
+        user: req.session?.user,
+        userId: req.session?.user?.id,
+        userRole: req.session?.user?.role,
         sessionId: req.sessionID
     });
     
-    if (!req.session || !req.session.isAdmin) {
+    if (!req.session || !req.session.user || req.session.user.role !== 'admin') {
         console.log('❌ Admin auth failed - redirecting to login');
         return res.redirect('/admin/login');
     }

@@ -14,7 +14,7 @@
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
                     <h1 class="text-2xl font-bold text-indigo-600">DDAWNG Admin</h1>
-                    <nav class="hidden md:flex space-x-8">
+                    <nav class="hidden md:flex space-x-8 ml-10">
                         <a href="/admin/dashboard" class="text-gray-700 hover:text-indigo-600">Dashboard</a>
                         <a href="/admin/products" class="text-gray-700 hover:text-indigo-600">Sản phẩm</a>
                         <a href="/admin/orders" class="text-indigo-600 border-b-2 border-indigo-500 pb-4">Đơn hàng</a>
@@ -106,128 +106,100 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tổng tiền</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày đặt</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hành động</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Hành động</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#DH001</td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
-                                    <div class="flex-shrink-0 h-10 w-10">
-                                        <img class="h-10 w-10 rounded-full object-cover" src="/images/avatar1.jpg" alt="Nguyễn Văn A">
+                        <% orders.forEach(order => { %>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#<%= order.id %></td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-10 w-10">
+                                            <img class="h-10 w-10 rounded-full object-cover" src="https://picsum.photos/seed/<%= order.id %>/100/100.jpg" alt="<%= order.customer_name %>">
+                                        </div>
+                                        <div class="ml-3">
+                                            <div class="text-sm font-medium text-gray-900"><%= order.customer_name %></div>
+                                            <div class="text-sm text-gray-500"><%= order.customer_email %></div>
+                                        </div>
                                     </div>
-                                    <div class="ml-3">
-                                        <div class="text-sm font-medium text-gray-900">Nguyễn Văn A</div>
-                                        <div class="text-sm text-gray-500">nguyenvana@email.com</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">
+                                        <% if (order.id % 3 === 1) { %>Váy hoa nhí vintage x1<% } %>
+                                        <% if (order.id % 3 === 2) { %>Áo sơ mi trắng x2<% } %>
+                                        <% if (order.id % 3 === 0) { %>Quần jeans slim x1<% } %>
                                     </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">Váy hoa nhí vintage x1, Áo sơ mi trắng x2</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="text-lg font-medium text-gray-900">1.299.000đ</span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Đã giao</span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">25/12/2024</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <div class="flex justify-end space-x-2">
-                                    <button class="text-indigo-600 hover:text-indigo-900">
-                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m6 0l-4-4m4 4l-4 4m6-0v6a2 2 0 01-2 2H7a2 2 0 01-2-2v-6m0 0V4a2 2 0 012-2h6a2 2 0 012 2v6"/>
-                                        </svg>
-                                    </button>
-                                    <button class="text-red-600 hover:text-red-900">
-                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L4 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#DH002</td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
-                                    <div class="flex-shrink-0 h-10 w-10">
-                                        <img class="h-10 w-10 rounded-full object-cover" src="/images/avatar2.jpg" alt="Trần Thị B">
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="text-lg font-medium text-gray-900"><%= Number(order.total_amount).toLocaleString('vi-VN') %>đ</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                        <% if (order.status === 'pending') { %>bg-yellow-100 text-yellow-800<% } %>
+                                        <% if (order.status === 'confirmed') { %>bg-blue-100 text-blue-800<% } %>
+                                        <% if (order.status === 'processing') { %>bg-purple-100 text-purple-800<% } %>
+                                        <% if (order.status === 'shipped') { %>bg-indigo-100 text-indigo-800<% } %>
+                                        <% if (order.status === 'delivered') { %>bg-green-100 text-green-800<% } %>
+                                        <% if (order.status === 'cancelled') { %>bg-red-100 text-red-800<% } %>
+                                    ">
+                                        <%= order.status === 'pending' ? 'Chờ xử lý' : '' %>
+                                        <%= order.status === 'confirmed' ? 'Đã xác nhận' : '' %>
+                                        <%= order.status === 'processing' ? 'Đang xử lý' : '' %>
+                                        <%= order.status === 'shipped' ? 'Đang giao' : '' %>
+                                        <%= order.status === 'delivered' ? 'Đã giao' : '' %>
+                                        <%= order.status === 'cancelled' ? 'Đã hủy' : '' %>
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <%= new Date(order.created_at).toLocaleDateString('vi-VN') %>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                                    <div class="flex justify-center space-x-2">
+                                        <a href="/admin/orders/<%= order.id %>" class="text-indigo-600 hover:text-indigo-900">
+                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m6 0l-4-4m4 4l-4 4m6-0v6a2 2 0 01-2 2H7a2 2 0 01-2-2v-6m0 0V4a2 2 0 012-2h6a2 2 0 012 2v6"/>
+                                            </svg>
+                                        </a>
+                                        <button onclick="deleteOrder(<%= order.id %>)" class="text-red-600 hover:text-red-900">
+                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L4 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                            </svg>
+                                        </button>
                                     </div>
-                                    <div class="ml-3">
-                                        <div class="text-sm font-medium text-gray-900">Trần Thị B</div>
-                                        <div class="text-sm text-gray-500">tranthib@email.com</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">Áo sơ mi trắng</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="text-lg font-medium text-gray-900">599.000đ</span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Đang xử lý</span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">25/12/2024</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <div class="flex justify-end space-x-2">
-                                    <button class="text-indigo-600 hover:text-indigo-900">
-                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m6 0l-4-4m4 4l-4 4m6-0v6a2 2 0 01-2 2H7a2 2 0 01-2-2v-6m0 0V4a2 2 0 012-2h6a2 2 0 012 2v6"/>
-                                        </svg>
-                                    </button>
-                                    <button class="text-red-600 hover:text-red-900">
-                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L4 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#DH003</td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
-                                    <div class="flex-shrink-0 h-10 w-10">
-                                        <img class="h-10 w-10 rounded-full object-cover" src="/images/avatar3.jpg" alt="Lê Hoàng C">
-                                    </div>
-                                    <div class="ml-3">
-                                        <div class="text-sm font-medium text-gray-900">Lê Hoàng C</div>
-                                        <div class="text-sm text-gray-500">lehoangc@email.com</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">Quần jeans slim</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="text-lg font-medium text-gray-900">799.000đ</span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">Chờ giao</span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">24/12/2024</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <div class="flex justify-end space-x-2">
-                                    <button class="text-indigo-600 hover:text-indigo-900">
-                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12H9m6 0l-4-4m4 4l-4 4m6-0v6a2 2 0 01-2 2H7a2 2 0 01-2-2v-6m0 0V4a2 2 0 012-2h6a2 2 0 012 2v6"/>
-                                        </svg>
-                                    </button>
-                                    <button class="text-red-600 hover:text-red-900">
-                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L4 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
+                        <% }) %>
                     </tbody>
                 </table>
             </div>
         </div>
     </main>
+
+    <script>
+        function deleteOrder(orderId) {
+            if (confirm('Bạn có chắc chắn muốn xóa đơn hàng này?')) {
+                fetch(`/admin/orders/${orderId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        location.reload();
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Lỗi khi xóa đơn hàng');
+                });
+            }
+        }
+    </script>
 </body>
 </html>
