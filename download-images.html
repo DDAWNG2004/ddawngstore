@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tải Hình Ảnh Sản Phẩm Mẫu</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .product { margin: 20px 0; border: 1px solid #ddd; padding: 15px; }
+        .image-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin: 10px 0; }
+        .image-item { text-align: center; }
+        .image-item img { max-width: 100%; height: auto; border: 1px solid #ccc; }
+        .download-btn { background: #007bff; color: white; padding: 8px 15px; text-decoration: none; border-radius: 4px; margin: 5px; display: inline-block; }
+        .download-btn:hover { background: #0056b3; }
+        .sql-output { background: #f8f9fa; padding: 15px; border-radius: 4px; margin: 10px 0; }
+        .copy-btn { background: #28a745; color: white; padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Tải Hình Ảnh Sản Phẩm Mẫu cho DDAWNG Store</h1>
+    
+    <div class="instructions">
+        <h2>Hướng dẫn sử dụng:</h2>
+        <ol>
+            <li>Nhấp vào nút "Tải hình ảnh" để tải về các hình ảnh placeholder</li>
+            <li>Lưu các file vào thư mục <code>public/images/</code></li>
+            <li>Sau khi tải xong, chạy file <code>update-images.sql</code> trong phpMyAdmin để cập nhật database</li>
+        </ol>
+    </div>
+
+    <div id="products"></div>
+
+    <div class="sql-output">
+        <h3>SQL để cập nhật database:</h3>
+        <button class="copy-btn" onclick="copySQL()">Copy SQL</button>
+        <pre id="sql-output"></pre>
+    </div>
+
+    <script>
+        const products = [
+            { 
+                id: 1, 
+                name: 'Váy hoa nhí vintage', 
+                seed: 'vay-hoa-nhi',
+                images: [
+                    { name: 'product1.jpg', size: '800x800', primary: true },
+                    { name: 'product-detail-1.jpg', size: '600x600', detail: 1 },
+                    { name: 'product-detail-2.jpg', size: '600x600', detail: 2 }
+                ]
+            },
+            { 
+                id: 2, 
+                name: 'Áo sơ mi trắng', 
+                seed: 'ao-so-mi',
+                images: [
+                    { name: 'product2.jpg', size: '800x800', primary: true },
+                    { name: 'product-detail-3.jpg', size: '600x600', detail: 1 },
+                    { name: 'product-detail-4.jpg', size: '600x600', detail: 2 }
+                ]
+            },
+            { 
+                id: 3, 
+                name: 'Quần jeans slim', 
+                seed: 'quan-jeans',
+                images: [
+                    { name: 'product3.jpg', size: '800x800', primary: true },
+                    { name: 'product5.jpg', size: '600x600', detail: 1 },
+                    { name: 'product6.jpg', size: '600x600', detail: 2 }
+                ]
+            },
+            { 
+                id: 4, 
+                name: 'Đầm công sở', 
+                seed: 'dam-cong-so',
+                images: [
+                    { name: 'product4.jpg', size: '800x800', primary: true },
+                    { name: 'product7.jpg', size: '600x600', detail: 1 },
+                    { name: 'product8.jpg', size: '600x600', detail: 2 }
+                ]
+            }
+        ];
+
+        const categories = [
+            { id: 1, name: 'Váy nữ', seed: 'vay-nu' },
+            { id: 2, name: 'Áo sơ mi', seed: 'ao-so-mi' },
+            { id: 3, name: 'Quần', seed: 'quan' },
+            { id: 4, name: 'Phụ kiện', seed: 'phu-kien' }
+        ];
+
+        function generateProducts() {
+            const container = document.getElementById('products');
+            let sql = '-- Cập nhật hình ảnh sản phẩm\\n';
+            
+            products.forEach(product => {
+                const div = document.createElement('div');
+                div.className = 'product';
+                div.innerHTML = `
+                    <h3>${product.name}</h3>
+                    <div class="image-grid">
+                        ${product.images.map(img => `
+                            <div class="image-item">
+                                <img src="https://picsum.photos/seed/${product.seed}-${img.detail || 'main'}/${img.size.replace('x', '/')}.jpg" alt="${img.name}">
+                                <p>${img.name}</p>
+                                <a href="https://picsum.photos/seed/${product.seed}-${img.detail || 'main'}/${img.size.replace('x', '/')}.jpg" 
+                                   download="${img.name}" class="download-btn">Tải hình ảnh</a>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(div);
+
+                // Generate SQL
+                product.images.forEach(img => {
+                    if (img.primary) {
+                        sql += `UPDATE product_images SET image_url = '/images/${img.name}' WHERE product_id = ${product.id} AND is_primary = TRUE;\\n`;
+                    } else if (img.detail) {
+                        sql += `UPDATE product_images SET image_url = '/images/${img.name}' WHERE product_id = ${product.id} AND sort_order = ${img.detail};\\n`;
+                    }
+                });
+            });
+
+            // Add category SQL
+            sql += '\\n-- Cập nhật hình ảnh danh mục\\n';
+            categories.forEach(cat => {
+                sql += `UPDATE categories SET image = '/images/category-${cat.id}.jpg' WHERE id = ${cat.id};\\n`;
+            });
+
+            document.getElementById('sql-output').textContent = sql;
+        }
+
+        function copySQL() {
+            const sql = document.getElementById('sql-output').textContent;
+            navigator.clipboard.writeText(sql).then(() => {
+                alert('Đã copy SQL vào clipboard!');
+            });
+        }
+
+        // Generate page content
+        generateProducts();
+    </script>
+</body>
+</html>

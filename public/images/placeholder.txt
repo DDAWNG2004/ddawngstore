@@ -1,0 +1,31 @@
+# Thư mục chứa hình ảnh sản phẩm
+
+## Hướng dẫn thêm hình ảnh:
+
+1. **Tải hình ảnh sản phẩm** vào thư mục này
+2. **Đặt tên file** theo quy tắc:
+   - product-[id].jpg (hình chính)
+   - product-[id]-[number].jpg (hình chi tiết)
+   - category-[id].jpg (hình danh mục)
+
+3. **Kích thước đề xuất:**
+   - Hình chính: 800x800px
+   - Thumbnail: 300x300px
+   - Chi tiết: 600x600px
+
+4. **Định dạng hỗ trợ:** JPG, PNG, WebP
+
+## Hình ảnh mẫu đã có:
+- product1.jpg - Váy hoa nhí
+- product2.jpg - Áo sơ mi trắng  
+- product3.jpg - Quần jeans slim
+- product4.jpg - Đầm công sở
+
+## Tạo placeholder images:
+Bạn có thể sử dụng các công cụ sau để tạo hình ảnh placeholder:
+- https://placeholder.com/
+- https://picsum.photos/
+- https://via.placeholder.com/
+
+Ví dụ URL placeholder:
+https://picsum.photos/seed/vay-hoa-nhi/800/800.jpg
