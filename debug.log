@@ -117,3 +117,210 @@
 {"timestamp":"2026-03-07T12:18:16.912Z","level":"info","message":"Server started on port 3000","error":null}
 {"timestamp":"2026-03-07T12:24:42.410Z","level":"info","message":"Server started on port 3000","error":null}
 {"timestamp":"2026-03-07T12:43:33.305Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-07T12:53:55.773Z","level":"error","message":"Error adding product:","error":{"message":"Column count doesn't match value count at row 1","stack":"Error\n    at Query.run (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\sequelize\\lib\\dialects\\mysql\\query.js:52:25)\n    at C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\sequelize\\lib\\sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\src\\routes\\admin.js:555:30"}}
+{"timestamp":"2026-03-07T13:52:15.434Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-07T13:54:54.946Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-07T13:59:26.695Z","level":"info","message":"Server started on port 3000","error":null}
+[2026-03-07T13:59:54.918Z] 🔄 === UPDATE PRODUCT DEBUG ===
+[2026-03-07T13:59:54.919Z] 📝 Product ID: 1
+[2026-03-07T13:59:54.919Z] 📝 Request body keys: productName,productCode,description,category,price,sku,mainImageUrl,additionalImageUrls,status,featured,variants,existing_variants
+[2026-03-07T13:59:54.919Z] 📦 Variants: []
+[2026-03-07T13:59:54.919Z] 📦 Existing variants: []
+[2026-03-07T13:59:54.919Z] 🗑️ Deleted variants: undefined
+[2026-03-07T13:59:54.919Z] 📁 Files: "none"
+[2026-03-07T14:00:17.994Z] 🔍 Raw variants data: "[{\"id\":1,\"sizeId\":\"7\",\"colorId\":\"9\",\"stock\":\"30\",\"sizeName\":\"3XL\",\"colorName\":\"Xám\"}]"
+[2026-03-07T14:00:17.995Z] 🔍 Type of variants: string
+[2026-03-07T14:00:17.996Z] 🔍 All request body keys: productName,productCode,description,category,price,status,mainImageUrl,additionalImageUrls,variants
+[2026-03-07T14:00:17.996Z] ✅ Parsed variants: [{"id":1,"sizeId":"7","colorId":"9","stock":"30","sizeName":"3XL","colorName":"Xám"}]
+{"timestamp":"2026-03-07T14:00:18.012Z","level":"error","message":"Error adding product:","error":{"message":"Column count doesn't match value count at row 1","stack":"Error\n    at Query.run (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\sequelize\\lib\\dialects\\mysql\\query.js:52:25)\n    at C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\sequelize\\lib\\sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\src\\routes\\admin.js:564:30"}}
+{"timestamp":"2026-03-07T14:07:53.787Z","level":"info","message":"Server started on port 3000","error":null}
+[2026-03-07T14:08:17.800Z] 🔄 === UPDATE PRODUCT DEBUG ===
+[2026-03-07T14:08:17.800Z] 📝 Product ID: 1
+[2026-03-07T14:08:17.800Z] 📝 Request body keys: productName,productCode,description,category,price,sku,mainImageUrl,additionalImageUrls,status,featured,variants,existing_variants
+[2026-03-07T14:08:17.800Z] 📦 Variants: []
+[2026-03-07T14:08:17.800Z] 📦 Existing variants: []
+[2026-03-07T14:08:17.800Z] 🗑️ Deleted variants: undefined
+[2026-03-07T14:08:17.800Z] 📁 Files: "none"
+[2026-03-07T14:08:50.622Z] 🔄 === UPDATE PRODUCT DEBUG ===
+[2026-03-07T14:08:50.622Z] 📝 Product ID: 1
+[2026-03-07T14:08:50.622Z] 📝 Request body keys: productName,productCode,description,category,price,sku,mainImageUrl,additionalImageUrls,status,featured,variants,existing_variants
+[2026-03-07T14:08:50.623Z] 📦 Variants: []
+[2026-03-07T14:08:50.623Z] 📦 Existing variants: []
+[2026-03-07T14:08:50.623Z] 🗑️ Deleted variants: undefined
+[2026-03-07T14:08:50.623Z] 📁 Files: "none"
+[2026-03-07T14:09:26.160Z] 🔍 Raw variants data: "[{\"id\":1,\"sizeId\":\"2\",\"colorId\":\"10\",\"stock\":\"20\",\"sizeName\":\"S\",\"colorName\":\"Nâu\"}]"
+[2026-03-07T14:09:26.160Z] 🔍 Type of variants: string
+[2026-03-07T14:09:26.161Z] 🔍 All request body keys: productName,productCode,description,category,price,status,mainImageUrl,additionalImageUrls,variants
+[2026-03-07T14:09:26.161Z] ✅ Parsed variants: [{"id":1,"sizeId":"2","colorId":"10","stock":"20","sizeName":"S","colorName":"Nâu"}]
+{"timestamp":"2026-03-07T14:09:26.174Z","level":"error","message":"Error adding product:","error":{"message":"Column count doesn't match value count at row 1","stack":"Error\n    at Query.run (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\sequelize\\lib\\dialects\\mysql\\query.js:52:25)\n    at C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\sequelize\\lib\\sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\src\\routes\\admin.js:564:30"}}
+{"timestamp":"2026-03-07T14:12:05.614Z","level":"info","message":"Server started on port 3000","error":null}
+[2026-03-07T14:12:32.590Z] 🔄 === UPDATE PRODUCT DEBUG ===
+[2026-03-07T14:12:32.590Z] 📝 Product ID: 1
+[2026-03-07T14:12:32.590Z] 📝 Request body keys: productName,productCode,description,category,price,sku,mainImageUrl,additionalImageUrls,status,featured,variants,existing_variants
+[2026-03-07T14:12:32.590Z] 📦 Variants: []
+[2026-03-07T14:12:32.590Z] 📦 Existing variants: []
+[2026-03-07T14:12:32.590Z] 🗑️ Deleted variants: undefined
+[2026-03-07T14:12:32.590Z] 📁 Files: "none"
+[2026-03-07T14:12:57.745Z] 🔍 Raw variants data: "[{\"id\":1,\"sizeId\":\"3\",\"colorId\":\"3\",\"stock\":\"20\",\"sizeName\":\"M\",\"colorName\":\"Đỏ\"}]"
+[2026-03-07T14:12:57.745Z] 🔍 Type of variants: string
+[2026-03-07T14:12:57.745Z] 🔍 All request body keys: productName,productCode,description,category,price,status,mainImageUrl,additionalImageUrls,variants
+[2026-03-07T14:12:57.746Z] ✅ Parsed variants: [{"id":1,"sizeId":"3","colorId":"3","stock":"20","sizeName":"M","colorName":"Đỏ"}]
+{"timestamp":"2026-03-07T14:12:57.762Z","level":"error","message":"Error adding product:","error":{"message":"Column count doesn't match value count at row 1","stack":"Error\n    at Query.run (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\sequelize\\lib\\dialects\\mysql\\query.js:52:25)\n    at C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\sequelize\\lib\\sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\src\\routes\\admin.js:564:30"}}
+[2026-03-07T14:14:13.129Z] 🔄 === UPDATE PRODUCT DEBUG ===
+[2026-03-07T14:14:13.129Z] 📝 Product ID: 1
+[2026-03-07T14:14:13.129Z] 📝 Request body keys: productName,productCode,description,category,price,sku,mainImageUrl,additionalImageUrls,status,featured,variants,existing_variants
+[2026-03-07T14:14:13.129Z] 📦 Variants: []
+[2026-03-07T14:14:13.129Z] 📦 Existing variants: []
+[2026-03-07T14:14:13.129Z] 🗑️ Deleted variants: undefined
+[2026-03-07T14:14:13.129Z] 📁 Files: "none"
+{"timestamp":"2026-03-07T14:15:36.429Z","level":"info","message":"Server started on port 3000","error":null}
+[2026-03-07T14:16:03.714Z] 🔄 === UPDATE PRODUCT DEBUG ===
+[2026-03-07T14:16:03.714Z] 📝 Product ID: 4
+[2026-03-07T14:16:03.714Z] 📝 Request body keys: productName,productCode,description,category,price,sku,mainImageUrl,additionalImageUrls,status,featured,variants,existing_variants
+[2026-03-07T14:16:03.714Z] 📦 Variants: []
+[2026-03-07T14:16:03.714Z] 📦 Existing variants: []
+[2026-03-07T14:16:03.715Z] 🗑️ Deleted variants: undefined
+[2026-03-07T14:16:03.715Z] 📁 Files: "none"
+{"timestamp":"2026-03-07T14:35:29.438Z","level":"info","message":"Server started on port 3000","error":null}
+[2026-03-07T14:57:53.574Z] 🔄 === UPDATE PRODUCT DEBUG ===
+[2026-03-07T14:57:53.576Z] 📝 Product ID: 1
+[2026-03-07T14:57:53.576Z] 📝 Request body keys: productName,productCode,description,category,price,sku,mainImageUrl,additionalImageUrls,status,featured,variants,existing_variants
+[2026-03-07T14:57:53.576Z] 📦 Variants: []
+[2026-03-07T14:57:53.576Z] 📦 Existing variants: []
+[2026-03-07T14:57:53.577Z] 🗑️ Deleted variants: undefined
+[2026-03-07T14:57:53.577Z] 📁 Files: "none"
+[2026-03-07T16:24:39.217Z] 🔄 === UPDATE PRODUCT DEBUG ===
+[2026-03-07T16:24:39.218Z] 📝 Product ID: 1
+[2026-03-07T16:24:39.218Z] 📝 Request body keys: productName,productCode,description,category,price,sku,mainImageUrl,additionalImageUrls,status,featured,variants,existing_variants
+[2026-03-07T16:24:39.218Z] 📦 Variants: []
+[2026-03-07T16:24:39.218Z] 📦 Existing variants: []
+[2026-03-07T16:24:39.218Z] 🗑️ Deleted variants: undefined
+[2026-03-07T16:24:39.219Z] 📁 Files: "none"
+{"timestamp":"2026-03-08T12:27:41.056Z","level":"info","message":"Server started on port 3000","error":null}
+[2026-03-08T12:30:25.631Z] 🔄 === UPDATE PRODUCT DEBUG ===
+[2026-03-08T12:30:25.631Z] 📝 Product ID: 1
+[2026-03-08T12:30:25.631Z] 📝 Request body keys: productName,productCode,description,category,price,sku,mainImageUrl,additionalImageUrls,status,featured,variants,existing_variants
+[2026-03-08T12:30:25.631Z] 📦 Variants: []
+[2026-03-08T12:30:25.631Z] 📦 Existing variants: []
+[2026-03-08T12:30:25.631Z] 🗑️ Deleted variants: undefined
+[2026-03-08T12:30:25.631Z] 📁 Files: "none"
+[2026-03-08T12:30:43.126Z] 🔄 === UPDATE PRODUCT DEBUG ===
+[2026-03-08T12:30:43.126Z] 📝 Product ID: 1
+[2026-03-08T12:30:43.126Z] 📝 Request body keys: productName,productCode,description,category,price,sku,mainImageUrl,additionalImageUrls,status,featured,variants,existing_variants
+[2026-03-08T12:30:43.126Z] 📦 Variants: []
+[2026-03-08T12:30:43.126Z] 📦 Existing variants: []
+[2026-03-08T12:30:43.126Z] 🗑️ Deleted variants: undefined
+[2026-03-08T12:30:43.126Z] 📁 Files: "none"
+{"timestamp":"2026-03-08T12:46:09.045Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-08T12:49:17.416Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-08T12:55:40.285Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-08T12:57:14.725Z","level":"error","message":"Error adding product:","error":{"message":"Column count doesn't match value count at row 1","stack":"Error\n    at Query.run (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\sequelize\\lib\\dialects\\mysql\\query.js:52:25)\n    at C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\sequelize\\lib\\sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\src\\routes\\admin.js:554:30"}}
+{"timestamp":"2026-03-08T13:32:03.696Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-08T13:32:48.872Z","level":"error","message":"Error adding product:","error":{"message":"Column count doesn't match value count at row 1","stack":"Error\n    at Query.run (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\sequelize\\lib\\dialects\\mysql\\query.js:52:25)\n    at C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\sequelize\\lib\\sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\src\\routes\\admin.js:554:30"}}
+{"timestamp":"2026-03-08T13:50:10.250Z","level":"error","message":"Error adding product:","error":{"message":"Column count doesn't match value count at row 1","stack":"Error\n    at Query.run (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\sequelize\\lib\\dialects\\mysql\\query.js:52:25)\n    at C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\sequelize\\lib\\sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\src\\routes\\admin.js:554:30"}}
+{"timestamp":"2026-03-08T14:25:36.692Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-08T14:27:22.536Z","level":"error","message":"Error adding product:","error":{"message":"Column count doesn't match value count at row 1","stack":"Error\n    at Query.run (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\sequelize\\lib\\dialects\\mysql\\query.js:52:25)\n    at C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\sequelize\\lib\\sequelize.js:315:28\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\src\\routes\\admin.js:554:30"}}
+{"timestamp":"2026-03-08T14:32:41.365Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-08T14:33:35.326Z","level":"error","message":"Error adding product:","error":{"message":"Positional replacement (?) 1 has no entry in the replacement map (replacements[1] is undefined).","stack":"Error: Positional replacement (?) 1 has no entry in the replacement map (replacements[1] is undefined).\n    at injectReplacements (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\sequelize\\lib\\utils\\sql.js:151:15)\n    at Sequelize.query (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\sequelize\\lib\\sequelize.js:286:13)\n    at C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\src\\routes\\admin.js:594:33\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"}}
+{"timestamp":"2026-03-08T15:24:43.052Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-08T15:25:32.679Z","level":"info","message":"Product inserted with ID:","error":null}
+{"timestamp":"2026-03-08T15:25:32.691Z","level":"info","message":"Product added successfully:","error":null}
+{"timestamp":"2026-03-08T15:49:01.843Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-08T15:49:40.840Z","level":"info","message":"Product inserted with ID:","error":null}
+{"timestamp":"2026-03-08T15:49:40.847Z","level":"info","message":"Product added successfully:","error":null}
+{"timestamp":"2026-03-08T16:17:52.232Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-08T16:19:49.407Z","level":"info","message":"Product inserted with ID:","error":null}
+{"timestamp":"2026-03-08T16:19:49.421Z","level":"info","message":"Product added successfully:","error":null}
+{"timestamp":"2026-03-08T16:21:10.245Z","level":"info","message":"Product inserted with ID:","error":null}
+{"timestamp":"2026-03-08T16:21:10.257Z","level":"info","message":"Product added successfully:","error":null}
+{"timestamp":"2026-03-08T16:24:04.523Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-08T16:25:08.796Z","level":"info","message":"Product inserted with ID:","error":null}
+{"timestamp":"2026-03-08T16:25:08.805Z","level":"info","message":"Product added successfully:","error":null}
+{"timestamp":"2026-03-08T16:30:32.797Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-08T16:34:28.086Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-08T16:39:56.286Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-09T09:26:34.669Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-09T09:29:29.742Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-09T09:35:51.213Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-09T09:44:17.336Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-09T09:52:18.545Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-09T10:08:22.056Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-09T10:17:13.705Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-09T10:24:45.158Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-09T10:33:16.324Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-09T13:57:10.493Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-09T16:00:59.785Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-09T16:11:06.708Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-09T16:28:53.108Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-09T16:37:40.968Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-09T16:41:23.432Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-09T16:49:06.657Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-09T17:04:23.589Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-09T17:11:54.435Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-10T09:12:41.512Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-10T09:25:17.758Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-10T09:29:29.480Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-10T09:36:54.540Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-10T10:44:42.899Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-10T11:02:17.766Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-10T11:19:35.702Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-10T13:18:49.990Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-10T13:23:17.629Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-10T13:26:03.740Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-10T13:32:46.111Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-10T13:52:21.862Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-10T15:02:30.938Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-10T15:53:55.631Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-10T16:06:46.472Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-10T16:19:35.019Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-10T16:23:26.289Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-10T16:24:10.578Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-10T16:30:57.019Z","level":"info","message":"Product inserted with ID:","error":null}
+{"timestamp":"2026-03-10T16:30:57.028Z","level":"info","message":"Product added successfully:","error":null}
+{"timestamp":"2026-03-10T16:44:27.552Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-10T16:51:02.729Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-10T16:55:28.798Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-10T16:59:00.578Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-10T17:02:44.507Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-10T17:12:27.166Z","level":"error","message":"Global error handler caught error:","error":{"message":"Invalid or unexpected token in C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\views\\home.ejs while compiling ejs\n\nIf the above error is not helpful, you may want to try EJS-Lint:\nhttps://github.com/RyanZim/EJS-Lint\nOr, if you meant to create an async function, pass `async: true` as an option.","stack":"SyntaxError: Invalid or unexpected token in C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\views\\home.ejs while compiling ejs\n\nIf the above error is not helpful, you may want to try EJS-Lint:\nhttps://github.com/RyanZim/EJS-Lint\nOr, if you meant to create an async function, pass `async: true` as an option.\n    at new Function (<anonymous>)\n    at Template.compile (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:673:12)\n    at Object.compile (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:398:16)\n    at handleCache (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:235:18)\n    at tryHandleCache (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:274:16)\n    at exports.renderFile [as engine] (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:491:10)\n    at View.render (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\view.js:135:8)\n    at tryRender (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\application.js:657:10)\n    at app.render (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\application.js:609:3)\n    at ServerResponse.render (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\response.js:1049:7)"}}
+{"timestamp":"2026-03-10T17:12:30.283Z","level":"error","message":"Global error handler caught error:","error":{"message":"Invalid or unexpected token in C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\views\\home.ejs while compiling ejs\n\nIf the above error is not helpful, you may want to try EJS-Lint:\nhttps://github.com/RyanZim/EJS-Lint\nOr, if you meant to create an async function, pass `async: true` as an option.","stack":"SyntaxError: Invalid or unexpected token in C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\views\\home.ejs while compiling ejs\n\nIf the above error is not helpful, you may want to try EJS-Lint:\nhttps://github.com/RyanZim/EJS-Lint\nOr, if you meant to create an async function, pass `async: true` as an option.\n    at new Function (<anonymous>)\n    at Template.compile (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:673:12)\n    at Object.compile (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:398:16)\n    at handleCache (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:235:18)\n    at tryHandleCache (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:274:16)\n    at exports.renderFile [as engine] (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:491:10)\n    at View.render (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\view.js:135:8)\n    at tryRender (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\application.js:657:10)\n    at app.render (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\application.js:609:3)\n    at ServerResponse.render (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\response.js:1049:7)"}}
+{"timestamp":"2026-03-10T17:12:37.740Z","level":"error","message":"Global error handler caught error:","error":{"message":"Invalid or unexpected token in C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\views\\home.ejs while compiling ejs\n\nIf the above error is not helpful, you may want to try EJS-Lint:\nhttps://github.com/RyanZim/EJS-Lint\nOr, if you meant to create an async function, pass `async: true` as an option.","stack":"SyntaxError: Invalid or unexpected token in C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\views\\home.ejs while compiling ejs\n\nIf the above error is not helpful, you may want to try EJS-Lint:\nhttps://github.com/RyanZim/EJS-Lint\nOr, if you meant to create an async function, pass `async: true` as an option.\n    at new Function (<anonymous>)\n    at Template.compile (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:673:12)\n    at Object.compile (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:398:16)\n    at handleCache (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:235:18)\n    at tryHandleCache (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:274:16)\n    at exports.renderFile [as engine] (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:491:10)\n    at View.render (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\view.js:135:8)\n    at tryRender (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\application.js:657:10)\n    at app.render (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\application.js:609:3)\n    at ServerResponse.render (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\response.js:1049:7)"}}
+{"timestamp":"2026-03-10T17:13:02.171Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-10T17:13:05.621Z","level":"error","message":"Global error handler caught error:","error":{"message":"Invalid or unexpected token in C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\views\\home.ejs while compiling ejs\n\nIf the above error is not helpful, you may want to try EJS-Lint:\nhttps://github.com/RyanZim/EJS-Lint\nOr, if you meant to create an async function, pass `async: true` as an option.","stack":"SyntaxError: Invalid or unexpected token in C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\views\\home.ejs while compiling ejs\n\nIf the above error is not helpful, you may want to try EJS-Lint:\nhttps://github.com/RyanZim/EJS-Lint\nOr, if you meant to create an async function, pass `async: true` as an option.\n    at new Function (<anonymous>)\n    at Template.compile (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:673:12)\n    at Object.compile (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:398:16)\n    at handleCache (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:235:18)\n    at tryHandleCache (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:274:16)\n    at exports.renderFile [as engine] (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:491:10)\n    at View.render (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\view.js:135:8)\n    at tryRender (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\application.js:657:10)\n    at app.render (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\application.js:609:3)\n    at ServerResponse.render (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\response.js:1049:7)"}}
+{"timestamp":"2026-03-10T17:13:07.407Z","level":"error","message":"Global error handler caught error:","error":{"message":"Invalid or unexpected token in C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\views\\home.ejs while compiling ejs\n\nIf the above error is not helpful, you may want to try EJS-Lint:\nhttps://github.com/RyanZim/EJS-Lint\nOr, if you meant to create an async function, pass `async: true` as an option.","stack":"SyntaxError: Invalid or unexpected token in C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\views\\home.ejs while compiling ejs\n\nIf the above error is not helpful, you may want to try EJS-Lint:\nhttps://github.com/RyanZim/EJS-Lint\nOr, if you meant to create an async function, pass `async: true` as an option.\n    at new Function (<anonymous>)\n    at Template.compile (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:673:12)\n    at Object.compile (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:398:16)\n    at handleCache (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:235:18)\n    at tryHandleCache (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:274:16)\n    at exports.renderFile [as engine] (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:491:10)\n    at View.render (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\view.js:135:8)\n    at tryRender (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\application.js:657:10)\n    at app.render (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\application.js:609:3)\n    at ServerResponse.render (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\response.js:1049:7)"}}
+{"timestamp":"2026-03-10T17:13:10.593Z","level":"error","message":"Global error handler caught error:","error":{"message":"Invalid or unexpected token in C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\views\\home.ejs while compiling ejs\n\nIf the above error is not helpful, you may want to try EJS-Lint:\nhttps://github.com/RyanZim/EJS-Lint\nOr, if you meant to create an async function, pass `async: true` as an option.","stack":"SyntaxError: Invalid or unexpected token in C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\views\\home.ejs while compiling ejs\n\nIf the above error is not helpful, you may want to try EJS-Lint:\nhttps://github.com/RyanZim/EJS-Lint\nOr, if you meant to create an async function, pass `async: true` as an option.\n    at new Function (<anonymous>)\n    at Template.compile (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:673:12)\n    at Object.compile (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:398:16)\n    at handleCache (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:235:18)\n    at tryHandleCache (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:274:16)\n    at exports.renderFile [as engine] (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:491:10)\n    at View.render (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\view.js:135:8)\n    at tryRender (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\application.js:657:10)\n    at app.render (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\application.js:609:3)\n    at ServerResponse.render (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\response.js:1049:7)"}}
+{"timestamp":"2026-03-10T17:13:29.631Z","level":"error","message":"Global error handler caught error:","error":{"message":"Invalid or unexpected token in C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\views\\home.ejs while compiling ejs\n\nIf the above error is not helpful, you may want to try EJS-Lint:\nhttps://github.com/RyanZim/EJS-Lint\nOr, if you meant to create an async function, pass `async: true` as an option.","stack":"SyntaxError: Invalid or unexpected token in C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\views\\home.ejs while compiling ejs\n\nIf the above error is not helpful, you may want to try EJS-Lint:\nhttps://github.com/RyanZim/EJS-Lint\nOr, if you meant to create an async function, pass `async: true` as an option.\n    at new Function (<anonymous>)\n    at Template.compile (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:673:12)\n    at Object.compile (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:398:16)\n    at handleCache (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:235:18)\n    at tryHandleCache (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:274:16)\n    at exports.renderFile [as engine] (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\ejs\\lib\\ejs.js:491:10)\n    at View.render (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\view.js:135:8)\n    at tryRender (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\application.js:657:10)\n    at app.render (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\application.js:609:3)\n    at ServerResponse.render (C:\\Users\\ASUS\\Documents\\sản phẩm project\\ddawngStore\\node_modules\\express\\lib\\response.js:1049:7)"}}
+{"timestamp":"2026-03-10T17:15:04.530Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-10T17:22:41.957Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-10T17:30:56.239Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-11T09:19:32.643Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-11T09:23:32.511Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-11T09:33:58.721Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-11T09:46:05.777Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-11T09:54:28.534Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-11T09:55:04.056Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-11T10:06:27.052Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-11T10:11:55.263Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-11T10:21:26.771Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-11T12:53:29.650Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-11T16:14:01.545Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-11T16:42:58.069Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-11T16:50:31.964Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-12T13:19:16.252Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-16T11:10:59.434Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-16T13:17:02.189Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-16T14:05:29.580Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-17T10:25:49.328Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-17T10:26:27.992Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-17T10:29:18.941Z","level":"info","message":"Product inserted with ID:","error":null}
+{"timestamp":"2026-03-17T10:29:18.946Z","level":"info","message":"Product added successfully:","error":null}
+{"timestamp":"2026-03-17T10:41:25.461Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-17T10:48:54.876Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-17T10:56:01.220Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-17T11:03:18.836Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-21T13:49:02.591Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-21T13:49:16.438Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-21T14:11:25.434Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-21T14:15:29.938Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-24T13:17:23.061Z","level":"info","message":"Server started on port 3000","error":null}
+{"timestamp":"2026-03-24T13:23:19.342Z","level":"info","message":"Server started on port 3000","error":null}

@@ -16,16 +16,8 @@ const ProductImage = sequelize.define('ProductImage', {
     }
   },
   image_url: {
-    type: DataTypes.STRING(255),
+    type: DataTypes.STRING(500),
     allowNull: false
-  },
-  alt_text: {
-    type: DataTypes.STRING(200),
-    allowNull: true
-  },
-  sort_order: {
-    type: DataTypes.INTEGER,
-    defaultValue: 0
   },
   is_primary: {
     type: DataTypes.BOOLEAN,

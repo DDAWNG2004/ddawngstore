@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,513 +8,1040 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body class="bg-gray-50">
-    <% var cartList = (typeof cartItems !== 'undefined' && cartItems) ? cartItems : (products || []); %>
-    <!-- Header -->
-    <header class="bg-white shadow-md sticky top-0 z-50">
-        <div class="container mx-auto px-4">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <h1 class="text-2xl font-bold text-indigo-600">DDAWNG</h1>
-                </div>
-                <nav class="hidden md:flex space-x-8">
-                    <a href="/" class="text-gray-700 hover:text-indigo-600 transition">Trang chủ</a>
-                    <a href="#" class="text-gray-700 hover:text-indigo-600 transition">Sản phẩm</a>
-                    <a href="#" class="text-gray-700 hover:text-indigo-600 transition">Về chúng tôi</a>
-                    <a href="#" class="text-gray-700 hover:text-indigo-600 transition">Liên hệ</a>
-                </nav>
-                <div class="flex items-center space-x-4">
-                    <button class="text-gray-700 hover:text-indigo-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                    </button>
-                    <a href="/cart" class="text-gray-700 hover:text-indigo-600 relative">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                        </svg>
-                        <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center cart-count leading-none" style="display: none; align-items: center; justify-content: center; text-align: center; line-height: 1.25;">0</span>
-                    </a>
-                </div>
-            </div>
+    <% var cartList=(typeof cartItems !=='undefined' && cartItems) ? cartItems : (products || []); %>
+        <!-- Header -->
+    <%- include('partials/header') %>
+
+        <!-- Breadcrumb -->
+        <div class="container mx-auto px-4 py-4">
+            <nav class="text-sm">
+                <a href="/" class="text-gray-600 hover:text-indigo-600">Trang chủ</a>
+                <span class="text-gray-400 mx-2">/</span>
+                <span class="text-gray-800">Giỏ hàng</span>
+            </nav>
         </div>
-    </header>
 
-    <!-- Breadcrumb -->
-    <div class="container mx-auto px-4 py-4">
-        <nav class="text-sm">
-            <a href="/" class="text-gray-600 hover:text-indigo-600">Trang chủ</a>
-            <span class="text-gray-400 mx-2">/</span>
-            <span class="text-gray-800">Giỏ hàng</span>
-        </nav>
-    </div>
+        <!-- Cart Content -->
+        <main class="container mx-auto px-4 py-8 lg:py-12 max-w-7xl">
+            <div class="flex items-baseline justify-between mb-8 border-b border-gray-200 pb-6">
+                <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Giỏ hàng của bạn</h1>
+                <p class="text-gray-500 font-medium"><span class="cart-count text-indigo-600 font-bold">0</span> sản
+                    phẩm</p>
+            </div>
 
-    <!-- Cart Content -->
-    <main class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold text-gray-900 mb-8">Giỏ hàng của bạn</h1>
-        
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <!-- Cart Items -->
-            <div class="lg:col-span-2">
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <div class="flex items-center space-x-4">
-                            <input type="checkbox" id="selectAll" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
-                            <label for="selectAll" class="font-semibold text-lg">Chọn tất cả</label>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                <!-- Left Column: Cart Items -->
+                <div class="lg:col-span-7 xl:col-span-8">
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="p-6 bg-gray-50/50 border-b border-gray-100 flex justify-between items-center">
+                            <label class="flex items-center space-x-3 cursor-pointer group">
+                                <input type="checkbox" id="selectAll"
+                                    class="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 transition-colors cursor-pointer">
+                                <span
+                                    class="font-semibold text-gray-700 group-hover:text-indigo-600 transition-colors">Chọn
+                                    tất cả</span>
+                            </label>
+                            <button onclick="deleteSelected()"
+                                class="text-red-500 hover:text-red-700 hover:bg-red-50 px-3 py-1.5 rounded-lg text-sm font-semibold flex items-center transition-colors">
+                                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L4 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                    </path>
+                                </svg>
+                                Xóa đã chọn
+                            </button>
                         </div>
-                        <button onclick="deleteSelected()" class="text-red-500 hover:text-red-700 text-sm font-medium flex items-center">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                            </svg>
-                            Xóa 
-                        </button>
+
+                        <div class="divide-y divide-gray-100">
+                            <% if (products && products.length> 0) { %>
+                                <% products.forEach(function(item) { %>
+                                    <div class="cart-item p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 hover:bg-gray-50/50 transition-colors"
+                                        data-price="<%= item.product_price || item.price || 0 %>"
+                                        data-quantity="<%= item.quantity || 1 %>" data-id="<%= item.id %>">
+
+                                        <input type="checkbox"
+                                            class="item-checkbox mt-4 sm:mt-0 w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 cursor-pointer"
+                                            data-id="<%= item.id %>">
+
+                                        <div
+                                            class="w-24 h-24 sm:w-28 sm:h-28 bg-gray-50 rounded-xl overflow-hidden flex-shrink-0 border border-gray-100 shadow-sm">
+                                            <% if (item.image_url) { %>
+                                                <img src="<%= item.image_url %>" alt="<%= item.product_name %>"
+                                                    class="w-full h-full object-cover">
+                                                <% } else { %>
+                                                    <img src="https://picsum.photos/seed/<%= item.product_id %>/200/200.jpg"
+                                                        alt="<%= item.product_name %>"
+                                                        class="w-full h-full object-cover">
+                                                    <% } %>
+                                        </div>
+
+                                        <div class="flex-1 w-full">
+                                            <div class="flex justify-between items-start">
+                                                <div>
+                                                    <h3 class="font-bold text-lg text-gray-900 line-clamp-2">
+                                                        <%= item.product_name %>
+                                                    </h3>
+                                                    <% if (item.category_name) { %>
+                                                        <p class="text-indigo-600 text-sm font-medium mt-1">
+                                                            <%= item.category_name %>
+                                                        </p>
+                                                        <% } %>
+
+                                                            <% if (item.size_name || item.color_name) { %>
+                                                                <div class="flex flex-wrap gap-2 mt-2">
+                                                                    <% if (item.size_name) { %>
+                                                                        <span
+                                                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">
+                                                                            Size: <%= item.size_name %>
+                                                                        </span>
+                                                                        <% } %>
+                                                                            <% if (item.color_name) { %>
+                                                                                <span
+                                                                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">
+                                                                                    Màu: <%= item.color_name %>
+                                                                                </span>
+                                                                                <% } %>
+                                                                </div>
+                                                                <% } %>
+                                                </div>
+                                                <button onclick="removeFromCart('<%= item.id %>')"
+                                                    class="text-gray-400 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors ml-4">
+                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+
+                                            <% let displayPrice=Number(item.product_price || item.price || 0) +
+                                                Number(item.price_adjustment || 0); %>
+                                                <div class="flex flex-wrap items-center justify-between mt-4 gap-4">
+                                                    <span class="text-xl font-extrabold text-gray-900">
+                                                        <%= new Intl.NumberFormat('vi-VN', { style: 'currency' ,
+                                                            currency: 'VND' }).format(displayPrice) %>
+                                                    </span>
+
+                                                    <div
+                                                        class="flex items-center border border-gray-200 rounded-lg p-1 bg-white shadow-sm">
+                                                        <button
+                                                            class="btn-quantity-minus w-8 h-8 rounded-md hover:bg-gray-100 flex items-center justify-center text-gray-600 transition-colors focus:ring-2 focus:ring-indigo-500 outline-none">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                                viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2" d="M20 12H4"></path>
+                                                            </svg>
+                                                        </button>
+                                                        <span class="w-10 text-center font-semibold text-gray-900">
+                                                            <%= item.quantity || 1 %>
+                                                        </span>
+                                                        <button
+                                                            class="btn-quantity-plus w-8 h-8 rounded-md hover:bg-gray-100 flex items-center justify-center text-gray-600 transition-colors focus:ring-2 focus:ring-indigo-500 outline-none">
+                                                            <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                                viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                        </div>
+                                    </div>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <div class="text-center py-16 px-4">
+                                                <div
+                                                    class="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                                                    <svg class="w-12 h-12 text-gray-400" fill="none"
+                                                        stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="1.5"
+                                                            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                                                    </svg>
+                                                </div>
+                                                <h3 class="text-xl font-bold text-gray-900 mb-2">Giỏ hàng của bạn đang
+                                                    trống</h3>
+                                                <p class="text-gray-500 mb-8 max-w-sm mx-auto">Có vẻ như bạn chưa thêm
+                                                    sản phẩm nào vào giỏ. Khám phá các sản phẩm nổi bật của chúng tôi
+                                                    nhé!</p>
+                                                <a href="/"
+                                                    class="inline-flex items-center px-8 py-3.5 border border-transparent text-base font-bold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm hover:shadow-indigo-200 transition-all">
+                                                    Tiếp tục mua sắm
+                                                </a>
+                                            </div>
+                                            <% } %>
+                        </div>
                     </div>
-                    
-                    <% if (products && products.length > 0) { %>
-                        <% products.forEach(function(item) { %>
-                            <div class="cart-item flex items-center space-x-4 py-6 border-b" 
-                                 data-price="<%= item.product_price || item.price || 0 %>" 
-                                 data-quantity="<%= item.quantity || 1 %>"
-                                 data-id="<%= item.id %>">
-                                <input type="checkbox" class="item-checkbox w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" data-id="<%= item.id %>">
-                                <div class="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-                                    <% if (item.image_url) { %>
-                                        <img src="<%= item.image_url %>" alt="<%= item.product_name %>" class="w-full h-full object-cover">
-                                    <% } else { %>
-                                        <img src="https://picsum.photos/seed/<%= item.product_id %>/200/200.jpg" alt="<%= item.product_name %>" class="w-full h-full object-cover">
-                                    <% } %>
-                                </div>
-                                <div class="flex-1">
-                                    <h3 class="font-semibold text-lg"><%= item.product_name %></h3>
-                                    <% if (item.category_name) { %>
-                                        <p class="text-gray-600 text-sm"><%= item.category_name %></p>
-                                    <% } %>
-                                    <% if (item.size || item.color) { %>
-                                        <p class="text-gray-500 text-sm">
-                                            <% if (item.size) { %>Size: <%= item.size %><% } %>
-                                            <% if (item.color) { %> - Color: <%= item.color %><% } %>
-                                        </p>
-                                    <% } %>
-                                    <div class="flex items-center justify-between mt-2">
-                                        <span class="text-lg font-bold text-indigo-600">
-                                            <%= new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.product_price || item.price || 0) %>
-                                        </span>
-                                        <div class="flex items-center space-x-2">
-                                            <button class="btn-quantity-minus w-8 h-8 rounded-full border border-gray-300 hover:border-indigo-500 flex items-center justify-center">-</button>
-                                            <span class="w-8 text-center"><%= item.quantity || 1 %></span>
-                                            <button class="btn-quantity-plus w-8 h-8 rounded-full border border-gray-300 hover:border-indigo-500 flex items-center justify-center">+</button>
+                </div>
+
+                <!-- Right Column: Checkout Sidebar -->
+                <div class="lg:col-span-5 xl:col-span-4">
+                    <div class="sticky top-24 space-y-6">
+
+                        <!-- Coupon Block -->
+                        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                            <h3 class="font-bold text-lg text-gray-900 mb-4 flex items-center">
+                                <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z">
+                                    </path>
+                                </svg>
+                                Mã giảm giá
+                            </h3>
+                            <div class="flex space-x-2">
+                                <input type="text" id="couponCode" placeholder="Nhập mã ưu đãi..."
+                                    class="flex-1 px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:bg-white transition-all font-medium uppercase placeholder:normal-case">
+                                <button onclick="applyCoupon()"
+                                    class="bg-gray-900 text-white px-5 py-2.5 rounded-xl font-medium hover:bg-gray-800 shadow-sm transition-colors whitespace-nowrap">
+                                    Áp dụng
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Checkout Form & Summary -->
+                        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                            <div class="p-6 bg-gray-50/50 border-b border-gray-100">
+                                <h3 class="font-bold text-lg text-gray-900">Thông tin giao hàng</h3>
+                            </div>
+                            <div class="p-6">
+                                <form id="customerInfoForm" class="space-y-4">
+                                    <div class="grid grid-cols-1 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Họ và tên
+                                                <span class="text-red-500">*</span></label>
+                                            <input type="text" id="fullName"
+                                                value="<%= customer ? customer.name : '' %>" required
+                                                class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:bg-white transition-all"
+                                                placeholder="Nhập họ tên người nhận">
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label class="block text-sm font-semibold text-gray-700 mb-1.5">Số điện
+                                                    thoại <span class="text-red-500">*</span></label>
+                                                <input type="tel" id="phone"
+                                                    value="<%= customer ? customer.phone : '' %>" required
+                                                    class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:bg-white transition-all"
+                                                    placeholder="09xx">
+                                            </div>
+                                            <div>
+                                                <label
+                                                    class="block text-sm font-semibold text-gray-700 mb-1.5">Email</label>
+                                                <input type="email" id="email"
+                                                    value="<%= customer ? customer.email : '' %>" required
+                                                    class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:bg-white transition-all"
+                                                    placeholder="abc@mail.com">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Địa chỉ nhận
+                                                hàng <span class="text-red-500">*</span></label>
+                                            <textarea rows="2" id="address" required
+                                                class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:bg-white transition-all resize-none"
+                                                placeholder="Nhập địa chỉ chi tiết"><%= customer ? customer.address : '' %></textarea>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Ghi chú
+                                                thêm</label>
+                                            <input type="text" id="notes"
+                                                class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:bg-white transition-all"
+                                                placeholder="Giao giờ hành chính, gọi trước khi đến...">
+                                        </div>
+                                    </div>
+                                </form>
+
+                                <!-- Payment Method -->
+                                <div class="mt-8">
+                                    <h3 class="font-bold text-gray-900 mb-4 flex items-center">
+                                        <svg class="w-5 h-5 mr-2 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                        </svg>
+                                        Phương thức thanh toán
+                                    </h3>
+                                    <div class="space-y-3" id="paymentMethodsContainer">
+                                        <!-- COD -->
+                                        <label class="payment-option flex items-start p-4 border-2 border-indigo-500 bg-indigo-50/30 rounded-xl cursor-pointer hover:border-indigo-500 transition-all group relative" data-method="cod">
+                                            <input type="radio" name="paymentMethod" value="cod" class="mt-1 mr-3 text-indigo-600 focus:ring-indigo-500 border-gray-300" checked>
+                                            <div class="flex-1">
+                                                <div class="font-semibold text-gray-900 flex items-center">
+                                                    <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-100 mr-3">
+                                                        <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                                        </svg>
+                                                    </span>
+                                                    Thanh toán khi nhận hàng (COD)
+                                                </div>
+                                                <div class="text-sm text-gray-500 mt-1 ml-11">Thanh toán bằng tiền mặt khi shipper giao sản phẩm</div>
+                                            </div>
+                                            <div class="payment-check absolute top-4 right-4 text-indigo-600">
+                                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                                </svg>
+                                            </div>
+                                        </label>
+
+                                        <!-- Chuyển khoản ngân hàng -->
+                                        <div>
+                                            <label class="payment-option flex items-start p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-blue-500 transition-all group relative" data-method="bank">
+                                                <input type="radio" name="paymentMethod" value="bank" class="mt-1 mr-3 text-indigo-600 focus:ring-indigo-500 border-gray-300">
+                                                <div class="flex-1">
+                                                    <div class="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors flex items-center">
+                                                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-blue-100 mr-3">
+                                                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                                            </svg>
+                                                        </span>
+                                                        Chuyển khoản ngân hàng
+                                                    </div>
+                                                    <div class="text-sm text-gray-500 mt-1 ml-11">Chuyển khoản qua Internet Banking hoặc quét mã QR</div>
+                                                    <div class="flex flex-wrap gap-2 mt-2 ml-11">
+                                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+                                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                                <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 7a2 2 0 11-4 0 2 2 0 014 0zm8 0a2 2 0 11-4 0 2 2 0 014 0zm-8 6a2 2 0 11-4 0 2 2 0 014 0zm8 0a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                                            </svg>
+                                                            MB Bank
+                                                        </span>
+                                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+                                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                                <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 7a2 2 0 11-4 0 2 2 0 014 0zm8 0a2 2 0 11-4 0 2 2 0 014 0zm-8 6a2 2 0 11-4 0 2 2 0 014 0zm8 0a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                                            </svg>
+                                                            Vietcombank
+                                                        </span>
+                                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+                                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                                <path d="M10 2a8 8 0 100 16 8 8 0 000-16zM8 7a2 2 0 11-4 0 2 2 0 014 0zm8 0a2 2 0 11-4 0 2 2 0 014 0zm-8 6a2 2 0 11-4 0 2 2 0 014 0zm8 0a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                                            </svg>
+                                                            Techcombank
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="payment-check absolute top-4 right-4 text-blue-600 hidden">
+                                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                </div>
+                                            </label>
+                                            <!-- Bank Transfer Info Panel -->
+                                            <div class="payment-info-panel hidden mt-2 ml-4 mr-4 p-5 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-xl" id="bankInfoPanel">
+                                                <div class="flex flex-col sm:flex-row gap-4">
+                                                    <div class="flex-shrink-0 mx-auto sm:mx-0">
+                                                        <div class="w-36 h-36 bg-white rounded-xl p-2 shadow-sm border border-blue-100">
+                                                            <img src="/images/maqr.jpg" alt="QR Ngân hàng" class="w-full h-full object-contain" id="bankQrImage">
+                                                        </div>
+                                                        <p class="text-xs text-center text-blue-500 mt-2 font-medium">Quét mã QR để chuyển khoản</p>
+                                                    </div>
+                                                    <div class="flex-1 space-y-2">
+                                                        <h4 class="font-bold text-blue-800 text-sm uppercase tracking-wide">Thông tin tài khoản</h4>
+                                                        <div class="space-y-1.5 text-sm">
+                                                            <div class="flex justify-between items-center py-1 border-b border-blue-100">
+                                                                <span class="text-gray-600 font-medium">Chủ tài khoản:</span>
+                                                                <span class="font-semibold text-gray-900">NGUYEN THIEN HAI DANG</span>
+                                                            </div>
+                                                            <div class="flex justify-between items-center py-1 border-b border-blue-100">
+                                                                <span class="text-gray-600 font-medium">Số tài khoản:</span>
+                                                                <span class="font-semibold text-gray-900 font-mono">0926837336</span>
+                                                            </div>
+                                                            <div class="flex justify-between items-center py-1 border-b border-blue-100">
+                                                                <span class="text-gray-600 font-medium">Ngân hàng:</span>
+                                                                <span class="font-semibold text-gray-900">MB Bank (Ngân hàng Quân đội)</span>
+                                                            </div>
+                                                            <div class="flex justify-between items-center py-1">
+                                                                <span class="text-gray-600 font-medium">Nội dung CK:</span>
+                                                                <span class="font-semibold text-indigo-600 font-mono payment-transfer-content">DH [Mã đơn hàng]</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mt-3 p-2.5 bg-blue-50 border border-blue-200 rounded-lg">
+                                                            <p class="text-xs text-blue-700 flex items-start">
+                                                                <svg class="w-4 h-4 mr-1.5 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                                                                </svg>
+                                                                Chuyển khoản 24/7. Đơn hàng sẽ được xác nhận ngay sau khi thanh toán thành công.
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- MoMo -->
+                                        <div>
+                                            <label class="payment-option flex items-start p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-pink-500 transition-all group relative" data-method="momo">
+                                                <input type="radio" name="paymentMethod" value="momo" class="mt-1 mr-3 text-indigo-600 focus:ring-indigo-500 border-gray-300">
+                                                <div class="flex-1">
+                                                    <div class="font-semibold text-gray-900 group-hover:text-pink-600 transition-colors flex items-center">
+                                                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg mr-3" style="background: linear-gradient(135deg, #ae2070, #d63384);">
+                                                            <span class="text-white font-extrabold text-xs">M</span>
+                                                        </span>
+                                                        Ví MoMo
+                                                    </div>
+                                                    <div class="text-sm text-gray-500 mt-1 ml-11">Thanh toán nhanh qua ví điện tử MoMo</div>
+                                                    <div class="flex items-center gap-2 mt-2 ml-11">
+                                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-700">
+                                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+                                                            </svg>
+                                                            Bảo mật
+                                                        </span>
+                                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-700">
+                                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                                            </svg>
+                                                            Nhanh chóng
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="payment-check absolute top-4 right-4 text-pink-600 hidden">
+                                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                </div>
+                                            </label>
+                                            <!-- MoMo Info Panel -->
+                                            <div class="payment-info-panel hidden mt-2 ml-4 mr-4 p-5 border border-pink-200 rounded-xl" style="background: linear-gradient(135deg, #fdf2f8, #fce7f3);">
+                                                <div class="flex flex-col sm:flex-row gap-4">
+                                                    <div class="flex-shrink-0 mx-auto sm:mx-0">
+                                                        <div class="w-36 h-36 bg-white rounded-xl p-2 shadow-sm border border-pink-100">
+                                                            <img src="/images/maqr.jpg" alt="QR MoMo" class="w-full h-full object-contain" id="momoQrImage">
+                                                        </div>
+                                                        <p class="text-xs text-center text-pink-500 mt-2 font-medium">Quét mã QR MoMo</p>
+                                                    </div>
+                                                    <div class="flex-1 space-y-2">
+                                                        <h4 class="font-bold text-sm uppercase tracking-wide" style="color: #ae2070;">Thông tin thanh toán MoMo</h4>
+                                                        <div class="space-y-1.5 text-sm">
+                                                            <div class="flex justify-between items-center py-1 border-b border-pink-100">
+                                                                <span class="text-gray-600 font-medium">Số điện thoại:</span>
+                                                                <span class="font-semibold text-gray-900 font-mono">0926837336</span>
+                                                            </div>
+                                                            <div class="flex justify-between items-center py-1 border-b border-pink-100">
+                                                                <span class="text-gray-600 font-medium">Tên tài khoản:</span>
+                                                                <span class="font-semibold text-gray-900">DDAWNG STORE</span>
+                                                            </div>
+                                                            <div class="flex justify-between items-center py-1">
+                                                                <span class="text-gray-600 font-medium">Nội dung CK:</span>
+                                                                <span class="font-semibold font-mono payment-transfer-content" style="color: #ae2070;">DH [Mã đơn hàng]</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mt-3 p-2.5 bg-pink-50 border border-pink-200 rounded-lg">
+                                                            <p class="text-xs text-pink-700 flex items-start">
+                                                                <svg class="w-4 h-4 mr-1.5 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                                                                </svg>
+                                                                Thanh toán MoMo được xác nhận ngay lập tức. Đơn hàng sẽ được xử lý ngay sau đó.
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- VNPay -->
+                                        <div>
+                                            <label class="payment-option flex items-start p-4 border-2 border-gray-200 rounded-xl cursor-pointer hover:border-red-500 transition-all group relative" data-method="vnpay">
+                                                <input type="radio" name="paymentMethod" value="vnpay" class="mt-1 mr-3 text-indigo-600 focus:ring-indigo-500 border-gray-300">
+                                                <div class="flex-1">
+                                                    <div class="font-semibold text-gray-900 group-hover:text-red-600 transition-colors flex items-center">
+                                                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-r from-red-500 to-red-600 mr-3">
+                                                            <span class="text-white font-extrabold text-xs">VN</span>
+                                                        </span>
+                                                        Cổng thanh toán VNPay
+                                                    </div>
+                                                    <div class="text-sm text-gray-500 mt-1 ml-11">Thanh toán qua thẻ ngân hàng, ví VNPay hoặc quét mã QR</div>
+                                                    <div class="flex flex-wrap gap-2 mt-2 ml-11">
+                                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
+                                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+                                                            </svg>
+                                                            An toàn
+                                                        </span>
+                                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-700">
+                                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                                            </svg>
+                                                            Hỗ trợ nhiều ngân hàng
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="payment-check absolute top-4 right-4 text-red-600 hidden">
+                                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                </div>
+                                            </label>
+                                            <!-- VNPay Info Panel -->
+                                            <div class="payment-info-panel hidden mt-2 ml-4 mr-4 p-5 border border-red-200 rounded-xl" style="background: linear-gradient(135deg, #fef2f2, #fee2e2);">
+                                                <div class="flex flex-col sm:flex-row gap-4">
+                                                    <div class="flex-shrink-0 mx-auto sm:mx-0">
+                                                        <div class="w-36 h-36 bg-white rounded-xl p-2 shadow-sm border border-red-100">
+                                                            <img src="/images/maqr.jpg" alt="QR VNPay" class="w-full h-full object-contain" id="vnpayQrImage">
+                                                        </div>
+                                                        <p class="text-xs text-center text-red-500 mt-2 font-medium">Quét mã QR VNPay</p>
+                                                    </div>
+                                                    <div class="flex-1 space-y-2">
+                                                        <h4 class="font-bold text-red-700 text-sm uppercase tracking-wide">Thông tin thanh toán VNPay</h4>
+                                                        <div class="space-y-1.5 text-sm">
+                                                            <div class="flex justify-between items-center py-1 border-b border-red-100">
+                                                                <span class="text-gray-600 font-medium">Mã merchant:</span>
+                                                                <span class="font-semibold text-gray-900 font-mono">DDAWNGSTORE</span>
+                                                            </div>
+                                                            <div class="flex justify-between items-center py-1 border-b border-red-100">
+                                                                <span class="text-gray-600 font-medium">Loại thẻ hỗ trợ:</span>
+                                                                <span class="font-semibold text-gray-900">Visa, Mastercard, JCB, ATM</span>
+                                                            </div>
+                                                            <div class="flex justify-between items-center py-1">
+                                                                <span class="text-gray-600 font-medium">Nội dung GD:</span>
+                                                                <span class="font-semibold text-red-600 font-mono payment-transfer-content">DH [Mã đơn hàng]</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mt-3 p-2.5 bg-red-50 border border-red-200 rounded-lg">
+                                                            <p class="text-xs text-red-700 flex items-start">
+                                                                <svg class="w-4 h-4 mr-1.5 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                                                                </svg>
+                                                                Thanh toán được xác nhận ngay lập tức. Hỗ trợ 24/7 và bảo mật đa tầng.
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <button onclick="removeFromCart('<%= item.id %>')" class="text-red-500 hover:text-red-700 p-2 rounded-full hover:bg-red-50 transition-colors">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                    </svg>
-                                </button>
-                            </div>
-                        <% }); %>
-                    <% } else { %>
-                        <div class="text-center py-12">
-                            <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                            </svg>
-                            <h3 class="text-lg font-medium text-gray-900 mb-2">Giỏ hàng trống</h3>
-                            <p class="text-gray-500">Bạn chưa có sản phẩm nào trong giỏ hàng.</p>
-                            <a href="/" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
-                                Tiếp tục mua sắm
-                            </a>
-                        </div>
-                    <% } %>
-                </div>
 
-                <!-- Coupon Code -->
-                <div class="bg-white rounded-lg shadow-md p-6 mt-6">
-                    <h3 class="font-semibold mb-4">Mã giảm giá</h3>
-                    <div class="flex space-x-2">
-                        <input type="text" placeholder="Nhập mã giảm giá" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500">
-                        <button onclick="applyCoupon()" class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition">
-                            Áp dụng
-                        </button>
-                    </div>
-                </div>
-            </div>
+                                <!-- Order Summary Details -->
+                                <div class="mt-8 pt-6 border-t border-gray-100 bg-gray-50/50 -mx-6 px-6 pb-2">
+                                    <div class="space-y-3">
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-gray-500 font-medium">Tạm tính:</span>
+                                            <span id="subtotal" class="font-bold text-gray-900">0 đ</span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-gray-500 font-medium">Phí vận chuyển:</span>
+                                            <span id="shipping" class="font-bold text-gray-900">30.000 đ</span>
+                                        </div>
+                                        <div class="flex justify-between items-center text-green-600">
+                                            <span class="font-medium flex items-center">Giảm giá:</span>
+                                            <span id="discount" class="font-bold">- 0 đ</span>
+                                        </div>
+                                        <div class="border-t border-gray-200 border-dashed pt-4 mt-4 !mb-4">
+                                            <div class="flex justify-between items-end">
+                                                <span class="font-bold text-gray-900">Thành tiền:</span>
+                                                <div class="text-right">
+                                                    <span id="total"
+                                                        class="block font-extrabold text-2xl text-indigo-600">0 đ</span>
+                                                    <span class="text-xs text-gray-500 font-medium">(Đã bao gồm
+                                                        VAT)</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
-            <!-- Customer Info & Checkout -->
-            <div class="bg-white rounded-lg shadow-md p-6 mt-6">
-                <h3 class="font-semibold text-lg mb-4">Thông tin nhận hàng</h3>
-                <form id="customerInfoForm" class="space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Họ và tên *</label>
-                            <input type="text" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" placeholder="Nguyễn Văn A">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Số điện thoại *</label>
-                            <input type="tel" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" placeholder="0912345678">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-                        <input type="email" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" placeholder="email@example.com">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Địa chỉ *</label>
-                        <textarea rows="3" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" placeholder="Nhập địa chỉ nhận hàng"></textarea>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Ghi chú</label>
-                        <textarea rows="2" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" placeholder="Ghi chú thêm (nếu có)"></textarea>
-                    </div>
-                </form>
-
-                <!-- Order Summary -->
-                <div class="bg-white rounded-lg shadow-md p-6 mt-6">
-                    <h3 class="font-semibold text-lg mb-4">Tổng đơn hàng</h3>
-                    <div class="space-y-3">
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Tạm tính:</span>
-                            <span id="subtotal">0 đ</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Phí vận chuyển:</span>
-                            <span id="shipping">30.000 đ</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Giảm giá:</span>
-                            <span id="discount" class="text-red-500">0 đ</span>
-                        </div>
-                        <div class="border-t pt-3">
-                            <div class="flex justify-between">
-                                <span class="font-semibold text-lg">Tổng cộng:</span>
-                                <span id="total" class="font-semibold text-lg text-indigo-600">0 đ</span>
+                                    <button onclick="proceedToCheckout()"
+                                        class="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 text-white py-4 rounded-xl font-bold text-lg hover:from-indigo-700 hover:to-indigo-800 shadow-lg shadow-indigo-200 hover:shadow-indigo-300 transition-all transform hover:-translate-y-0.5 mt-2 flex justify-center items-center">
+                                        Tiến hành đặt hàng
+                                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                        </svg>
+                                    </button>
+                                    <a href="/"
+                                        class="block w-full text-center py-4 text-sm font-semibold text-gray-500 hover:text-indigo-600 transition-colors mt-2">
+                                        Thêm sản phẩm khác
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </main>
 
-                    <!-- Payment Methods -->
-                    <div class="bg-white rounded-lg shadow-md p-6 mt-6">
-                        <h3 class="font-semibold text-lg mb-4">Phương thức thanh toán</h3>
-                        <div class="space-y-3">
-                            <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:border-indigo-500 transition">
-                                <input type="radio" name="paymentMethod" value="cod" class="mr-3" checked>
-                                <div class="flex-1">
-                                    <div class="font-medium">Thanh toán khi nhận hàng (COD)</div>
-                                    <div class="text-sm text-gray-500">Thanh toán bằng tiền mặt khi nhận sản phẩm</div>
-                                </div>
-                            </label>
-                            <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:border-indigo-500 transition">
-                                <input type="radio" name="paymentMethod" value="bank" class="mr-3">
-                                <div class="flex-1">
-                                    <div class="font-medium">Chuyển khoản ngân hàng</div>
-                                    <div class="text-sm text-gray-500">Chuyển khoản qua ngân hàng nội địa</div>
-                                </div>
-                            </label>
-                            <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:border-indigo-500 transition">
-                                <input type="radio" name="paymentMethod" value="card" class="mr-3">
-                                <div class="flex-1">
-                                    <div class="font-medium">Thẻ tín dụng/Ghi nợ</div>
-                                    <div class="text-sm text-gray-500">Thanh toán qua Visa, Mastercard, JCB</div>
-                                </div>
-                            </label>
-                            <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:border-indigo-500 transition">
-                                <input type="radio" name="paymentMethod" value="ewallet" class="mr-3">
-                                <div class="flex-1">
-                                    <div class="font-medium">Ví điện tử</div>
-                                    <div class="text-sm text-gray-500">MoMo, ZaloPay, ShopeePay</div>
-                                </div>
-                            </label>
-                        </div>
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white mt-16">
+            <div class="container mx-auto px-4 py-12">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <div>
+                        <h4 class="text-lg font-semibold mb-4">DDAWNG Store</h4>
+                        <p class="text-gray-300 text-sm">
+                            Cửa hàng thời trang cao cấp với các sản phẩm chất lượng và mẫu mã đa dạng.
+                        </p>
                     </div>
-
-                    <button onclick="proceedToCheckout()" class="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition mt-6">
-                        Đặt hàng
-                    </button>
-                    <a href="/" class="block w-full text-center py-3 text-indigo-600 hover:text-indigo-700 mt-3">
-                        ← Tiếp tục mua sắm
-                    </a>
+                    <div>
+                        <h4 class="text-lg font-semibold mb-4">Sản phẩm</h4>
+                        <ul class="space-y-2 text-gray-300 text-sm">
+                            <li><a href="#" class="hover:text-white transition">Áo</a></li>
+                            <li><a href="#" class="hover:text-white transition">Quần</a></li>
+                            <li><a href="#" class="hover:text-white transition">Váy</a></li>
+                            <li><a href="#" class="hover:text-white transition">Phụ kiện</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold mb-4">Hỗ trợ</h4>
+                        <ul class="space-y-2 text-gray-300 text-sm">
+                            <li><a href="#" class="hover:text-white transition">Hướng dẫn mua hàng</a></li>
+                            <li><a href="#" class="hover:text-white transition">Chính sách đổi trả</a></li>
+                            <li><a href="#" class="hover:text-white transition">Chính sách bảo mật</a></li>
+                            <li><a href="#" class="hover:text-white transition">Vận chuyển</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold mb-4">Liên hệ</h4>
+                        <ul class="space-y-2 text-gray-300 text-sm">
+                            <li class="flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502.842l-2.106-2.106A1 1 0 015 9.5H7a1 1 0 00-1 1v5a1 1 0 001 1h3.28a1 1 0 01.948-.684l1.498-4.493A1 1 0 0112.5 3H7a2 2 0 00-2 2v5a2 2 0 002 2z">
+                                    </path>
+                                </svg>
+                                123 Nguyễn Huệ, Q.10, Phú Nhuận, TP.HCM
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502.842l-2.106-2.106A1 1 0 015 9.5H7a1 1 0 00-1 1v5a1 1 0 001 1h3.28a1 1 0 01.948-.684l1.498-4.493A1 1 0 0112.5 3H7a2 2 0 00-2 2v5a2 2 0 002 2z">
+                                    </path>
+                                </svg>
+                                (028) 1234 5678
+                            </li>
+                            <li class="flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+                                    </path>
+                                </svg>
+                                support@ddawngstore.com
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
+                    <p>&copy; 2024 DDAWNG Store. All rights reserved.</p>
                 </div>
             </div>
-        </div>
-    </main>
+        </footer>
 
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white mt-16">
-        <div class="container mx-auto px-4 py-12">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                    <h4 class="text-lg font-semibold mb-4">DDAWNG Store</h4>
-                    <p class="text-gray-300 text-sm">
-                        Cửa hàng thời trang cao cấp với các sản phẩm chất lượng và mẫu mã đa dạng.
-                    </p>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold mb-4">Sản phẩm</h4>
-                    <ul class="space-y-2 text-gray-300 text-sm">
-                        <li><a href="#" class="hover:text-white transition">Áo</a></li>
-                        <li><a href="#" class="hover:text-white transition">Quần</a></li>
-                        <li><a href="#" class="hover:text-white transition">Váy</a></li>
-                        <li><a href="#" class="hover:text-white transition">Phụ kiện</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold mb-4">Hỗ trợ</h4>
-                    <ul class="space-y-2 text-gray-300 text-sm">
-                        <li><a href="#" class="hover:text-white transition">Hướng dẫn mua hàng</a></li>
-                        <li><a href="#" class="hover:text-white transition">Chính sách đổi trả</a></li>
-                        <li><a href="#" class="hover:text-white transition">Chính sách bảo mật</a></li>
-                        <li><a href="#" class="hover:text-white transition">Vận chuyển</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold mb-4">Liên hệ</h4>
-                    <ul class="space-y-2 text-gray-300 text-sm">
-                        <li class="flex items-center">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502.842l-2.106-2.106A1 1 0 015 9.5H7a1 1 0 00-1 1v5a1 1 0 001 1h3.28a1 1 0 01.948-.684l1.498-4.493A1 1 0 0112.5 3H7a2 2 0 00-2 2v5a2 2 0 002 2z"></path>
-                            </svg>
-                            123 Nguyễn Huệ, Q.10, Phú Nhuận, TP.HCM
-                        </li>
-                        <li class="flex items-center">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502.842l-2.106-2.106A1 1 0 015 9.5H7a1 1 0 00-1 1v5a1 1 0 001 1h3.28a1 1 0 01.948-.684l1.498-4.493A1 1 0 0112.5 3H7a2 2 0 00-2 2v5a2 2 0 002 2z"></path>
-                            </svg>
-                            (028) 1234 5678
-                        </li>
-                        <li class="flex items-center">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                            </svg>
-                            support@ddawngstore.com
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm">
-                <p>&copy; 2024 DDAWNG Store. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script>
-        function updateQuantity(itemId, change) {
-            console.log('Updating quantity:', itemId, change);
-            // TODO: Implement AJAX call to update quantity
-            updateOrderSummary();
-        }
-
-        function removeFromCart(itemId) {
-            console.log('Removing from cart:', itemId);
-            
-            if (confirm('Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?')) {
-                fetch(`/cart/remove/${itemId}`, {
+        <script>
+            function updateQuantity(itemId, change) {
+                console.log('Updating quantity:', itemId, change);
+                
+                fetch(`/cart/update/${itemId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
-                    }
+                    },
+                    body: JSON.stringify({ change })
                 })
                 .then(response => response.json())
                 .then(result => {
                     if (result.success) {
-                        // Remove item from DOM
+                        // Update quantity in DOM
                         const cartItem = document.querySelector(`[data-id="${itemId}"]`);
                         if (cartItem) {
-                            cartItem.remove();
-                        }
-                        
-                        // Update cart count
-                        updateCartCount(result.cartCount);
-                        
-                        // Update order summary
-                        updateOrderSummary();
-                        
-                        // Show notification
-                        showNotification('Đã xóa sản phẩm khỏi giỏ hàng', 'success');
-                        
-                        // Check if cart is empty
-                        const remainingItems = document.querySelectorAll('.cart-item');
-                        if (remainingItems.length === 0) {
-                            location.reload();
+                            // Update current quantity display
+                            const quantitySpan = cartItem.querySelector('.btn-quantity-minus').nextElementSibling;
+                            quantitySpan.textContent = result.newQuantity;
+                            
+                            // Update data attribute for order summary logic
+                            cartItem.dataset.quantity = result.newQuantity;
+
+                            // Update cart count in header
+                            updateCartCount(result.cartCount);
+
+                            // Refresh order summary (subtotal, total, etc.)
+                            updateOrderSummary();
                         }
                     } else {
-                        showNotification(result.message || 'Lỗi khi xóa sản phẩm', 'error');
+                        showNotification(result.message || 'Lỗi khi cập nhật số lượng', 'error');
                     }
                 })
                 .catch(error => {
-                    console.error('Error removing from cart:', error);
-                    showNotification('Lỗi khi xóa sản phẩm', 'error');
+                    console.error('Error updating quantity:', error);
+                    showNotification('Lỗi khi cập nhật số lượng', 'error');
                 });
             }
-        }
 
-        function deleteSelected() {
-            const selectedCheckboxes = document.querySelectorAll('.item-checkbox:checked');
-            const selectedIds = Array.from(selectedCheckboxes).map(cb => cb.dataset.id);
-            
-            if (selectedIds.length === 0) {
-                showNotification('Vui lòng chọn ít nhất một sản phẩm để xóa', 'warning');
-                return;
-            }
-            
-            if (confirm(`Bạn có chắc muốn xóa ${selectedIds.length} sản phẩm đã chọn?`)) {
-                Promise.all(selectedIds.map(itemId => 
+            function removeFromCart(itemId) {
+                console.log('Removing from cart:', itemId);
+
+                if (confirm('Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?')) {
                     fetch(`/cart/remove/${itemId}`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
                         }
-                    }).then(response => response.json())
-                ))
-                .then(results => {
-                    const successCount = results.filter(r => r.success).length;
-                    if (successCount > 0) {
-                        showNotification(`Đã xóa ${successCount} sản phẩm đã chọn`, 'success');
-                        
-                        // Update cart count
-                        const remainingCount = results.find(r => r.success)?.cartCount || 0;
-                        updateCartCount(remainingCount);
-                        
-                        // Reload page to update UI
-                        setTimeout(() => location.reload(), 1000);
+                    })
+                        .then(response => response.json())
+                        .then(result => {
+                            if (result.success) {
+                                // Remove item from DOM
+                                const cartItem = document.querySelector(`[data-id="${itemId}"]`);
+                                if (cartItem) {
+                                    cartItem.remove();
+                                }
+
+                                // Update cart count
+                                updateCartCount(result.cartCount);
+
+                                // Update order summary
+                                updateOrderSummary();
+
+                                // Show notification
+                                showNotification('Đã xóa sản phẩm khỏi giỏ hàng', 'success');
+
+                                // Check if cart is empty
+                                const remainingItems = document.querySelectorAll('.cart-item');
+                                if (remainingItems.length === 0) {
+                                    location.reload();
+                                }
+                            } else {
+                                showNotification(result.message || 'Lỗi khi xóa sản phẩm', 'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error removing from cart:', error);
+                            showNotification('Lỗi khi xóa sản phẩm', 'error');
+                        });
+                }
+            }
+
+            function deleteSelected() {
+                const selectedCheckboxes = document.querySelectorAll('.item-checkbox:checked');
+                const selectedIds = Array.from(selectedCheckboxes).map(cb => cb.dataset.id);
+
+                if (selectedIds.length === 0) {
+                    showNotification('Vui lòng chọn ít nhất một sản phẩm để xóa', 'warning');
+                    return;
+                }
+
+                if (confirm(`Bạn có chắc muốn xóa ${selectedIds.length} sản phẩm đã chọn?`)) {
+                    Promise.all(selectedIds.map(itemId =>
+                        fetch(`/cart/remove/${itemId}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        }).then(response => response.json())
+                    ))
+                        .then(results => {
+                            const successCount = results.filter(r => r.success).length;
+                            if (successCount > 0) {
+                                showNotification(`Đã xóa ${successCount} sản phẩm đã chọn`, 'success');
+
+                                // Update cart count
+                                const remainingCount = results.find(r => r.success)?.cartCount || 0;
+                                updateCartCount(remainingCount);
+
+                                // Reload page to update UI
+                                setTimeout(() => location.reload(), 1000);
+                            } else {
+                                showNotification('Lỗi khi xóa sản phẩm', 'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error deleting selected:', error);
+                            showNotification('Lỗi khi xóa sản phẩm', 'error');
+                        });
+                }
+            }
+
+            let currentDiscount = 0;
+            let appliedCoupon = null;
+
+            async function applyCoupon() {
+                const input = document.getElementById('couponCode');
+                const code = input.value.trim();
+                if (!code) {
+                    showNotification('Vui lòng nhập mã giảm giá', 'warning');
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/api/check-coupon', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ code })
+                    });
+                    const result = await response.json();
+
+                    if (result.success) {
+                        showNotification(result.message, 'success');
+                        appliedCoupon = result.code;
+
+                        // Tính trực tiếp lại subtotal hiện tại từ UI Checkbox
+                        let tempSubtotal = 0;
+                        document.querySelectorAll('.item-checkbox:checked').forEach(function (checkbox) {
+                            const cartItem = checkbox.closest('.cart-item');
+                            const price = parseFloat(cartItem.dataset.price) || 0;
+                            const quantity = parseInt(cartItem.dataset.quantity) || 1;
+                            tempSubtotal += price * quantity;
+                        });
+
+                        if (result.discountType === 'percent') {
+                            currentDiscount = Math.round(tempSubtotal * (result.discountValue / 100));
+                        } else if (result.discountType === 'fixed') {
+                            currentDiscount = result.discountValue;
+                        }
+
+                        if (currentDiscount > tempSubtotal) currentDiscount = tempSubtotal;
+
+                        updateOrderSummary();
                     } else {
-                        showNotification('Lỗi khi xóa sản phẩm', 'error');
+                        currentDiscount = 0;
+                        appliedCoupon = null;
+                        showNotification(result.message, 'error');
+                        updateOrderSummary();
                     }
-                })
-                .catch(error => {
-                    console.error('Error deleting selected:', error);
-                    showNotification('Lỗi khi xóa sản phẩm', 'error');
+                } catch (err) {
+                    console.error(err);
+                    showNotification('Lỗi áp dụng mã', 'error');
+                }
+            }
+
+            function updateOrderSummary() {
+                // Tính toán tổng đơn hàng chỉ cho sản phẩm đã chọn
+                let subtotal = 0;
+
+                // Lấy dữ liệu từ các sản phẩm đã chọn trong giỏ hàng
+                const selectedCheckboxes = document.querySelectorAll('.item-checkbox:checked');
+                selectedCheckboxes.forEach(function (checkbox) {
+                    const cartItem = checkbox.closest('.cart-item');
+                    const price = parseFloat(cartItem.dataset.price) || 0;
+                    const quantity = parseInt(cartItem.dataset.quantity) || 1;
+                    subtotal += price * quantity;
+                });
+
+                // Re-calculate percentages coupon dynamically across checks
+                if (appliedCoupon === 'WELCOME10') {
+                    currentDiscount = Math.round(subtotal * 0.1);
+                } else if (appliedCoupon === 'SALE50K' && subtotal > 0) {
+                    currentDiscount = 50000;
+                } else if (subtotal === 0) {
+                    currentDiscount = 0;
+                }
+                if (currentDiscount > subtotal) currentDiscount = subtotal;
+
+                const shipping = 30000;
+                const total = subtotal + shipping - currentDiscount;
+
+                document.getElementById('subtotal').textContent = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(subtotal);
+                document.getElementById('shipping').textContent = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(shipping);
+                document.getElementById('discount').textContent = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(currentDiscount);
+                document.getElementById('total').textContent = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(total);
+            }
+
+            // Update cart count in header
+            function updateCartCount(count) {
+                const cartCountElements = document.querySelectorAll('.cart-count');
+                cartCountElements.forEach(element => {
+                    element.textContent = count;
+                    element.style.display = count > 0 ? 'inline' : 'none';
                 });
             }
-        }
 
-        function applyCoupon() {
-            console.log('Applying coupon');
-            // TODO: Implement coupon logic
-            updateOrderSummary();
-        }
+            // Show notification
+            function showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${type === 'success' ? 'bg-green-500 text-white' :
+                        type === 'error' ? 'bg-red-500 text-white' :
+                            'bg-blue-500 text-white'
+                    }`;
+                notification.textContent = message;
 
-        function updateOrderSummary() {
-            // Tính toán tổng đơn hàng chỉ cho sản phẩm đã chọn
-            let subtotal = 0;
-            
-            // Lấy dữ liệu từ các sản phẩm đã chọn trong giỏ hàng
-            const selectedCheckboxes = document.querySelectorAll('.item-checkbox:checked');
-            selectedCheckboxes.forEach(function(checkbox) {
-                const cartItem = checkbox.closest('.cart-item');
-                const price = parseFloat(cartItem.dataset.price) || 0;
-                const quantity = parseInt(cartItem.dataset.quantity) || 1;
-                subtotal += price * quantity;
-            });
-            
-            const shipping = 30000;
-            const discount = 0;
-            const total = subtotal + shipping - discount;
-            
-            document.getElementById('subtotal').textContent = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(subtotal);
-            document.getElementById('shipping').textContent = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(shipping);
-            document.getElementById('discount').textContent = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(discount);
-            document.getElementById('total').textContent = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(total);
-        }
-        
-        // Update cart count in header
-        function updateCartCount(count) {
-            const cartCountElements = document.querySelectorAll('.cart-count');
-            cartCountElements.forEach(element => {
-                element.textContent = count;
-                element.style.display = count > 0 ? 'inline' : 'none';
-            });
-        }
-        
-        // Show notification
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
-                type === 'success' ? 'bg-green-500 text-white' :
-                type === 'error' ? 'bg-red-500 text-white' :
-                'bg-blue-500 text-white'
-            }`;
-            notification.textContent = message;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.remove();
-            }, 3000);
-        }
-        
-        // Load cart count on page load
-        async function loadCartCount() {
-            try {
-                const response = await fetch('/cart/count');
-                const result = await response.json();
-                updateCartCount(result.count);
-            } catch (error) {
-                console.error('Error loading cart count:', error);
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.remove();
+                }, 3000);
             }
-        }
 
-        function proceedToCheckout() {
-            // TODO: Implement checkout process
-            console.log('Proceeding to checkout');
-            alert('Chức năng thanh toán đang được phát triển!');
-        }
+            // Load cart count on page load
+            async function loadCartCount() {
+                try {
+                    const response = await fetch('/cart/count');
+                    const result = await response.json();
+                    updateCartCount(result.count);
+                } catch (error) {
+                    console.error('Error loading cart count:', error);
+                }
+            }
 
-        // Initialize order summary on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            updateOrderSummary();
-            loadCartCount(); // Load cart count on page load
-            
-            // Add event listener for select all checkbox
-            document.getElementById('selectAll').addEventListener('change', function() {
-                const itemCheckboxes = document.querySelectorAll('.item-checkbox');
-                itemCheckboxes.forEach(checkbox => {
-                    checkbox.checked = this.checked;
+            async function proceedToCheckout() {
+                // Lấy id của các sản phẩm đã chọn
+                const selectedCheckboxes = document.querySelectorAll('.item-checkbox:checked');
+                if (selectedCheckboxes.length === 0) {
+                    showNotification('Vui lòng chọn ít nhất một sản phẩm để đặt hàng', 'warning');
+                    return;
+                }
+
+                const itemIds = Array.from(selectedCheckboxes).map(cb => {
+                    const cartItem = cb.closest('.cart-item');
+                    return cartItem.dataset.id; // Cart DB ID
                 });
-                
-                // Update order summary when select all changes
+
+                // Validate form thông tin
+                const form = document.getElementById('customerInfoForm');
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
+
+                const inputs = form.querySelectorAll('input, textarea');
+                const customer = {
+                    fullName: inputs[0].value,
+                    phone: inputs[1].value,
+                    email: inputs[2].value,
+                    address: inputs[3].value,
+                    notes: inputs[4].value
+                };
+
+                // Lấy phương thức thanh toán
+                const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+
+                try {
+                    // Hiển thị loading (tùy chọn)
+                    const checkoutBtn = document.querySelector('button[onclick="proceedToCheckout()"]');
+                    const orgText = checkoutBtn.textContent;
+                    checkoutBtn.textContent = 'Đang xử lý...';
+                    checkoutBtn.disabled = true;
+
+                    const response = await fetch('/checkout', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            itemIds,
+                            customer,
+                            paymentMethod,
+                            couponCode: appliedCoupon
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        // Đặt hàng thành công thì tự động redirect
+                        if (result.cartCount !== undefined) {
+                            updateCartCount(result.cartCount);
+                        }
+                        window.location.href = `/checkout/success?orderId=${result.orderId}&method=${paymentMethod}`;
+                    } else {
+                        showNotification(result.message || 'Lỗi khi đặt hàng', 'error');
+                        checkoutBtn.textContent = orgText;
+                        checkoutBtn.disabled = false;
+                    }
+                } catch (error) {
+                    console.error('Error during checkout:', error);
+                    showNotification('Lỗi kết nối. Vui lòng thử lại.', 'error');
+                    const checkoutBtn = document.querySelector('button[onclick="proceedToCheckout()"]');
+                    checkoutBtn.textContent = 'Đặt hàng';
+                    checkoutBtn.disabled = false;
+                }
+            }
+
+            // Initialize order summary on page load
+            // Payment method toggle logic
+            function initPaymentMethodToggle() {
+                const colorMap = {
+                    cod: 'indigo',
+                    bank: 'blue',
+                    momo: 'pink',
+                    vnpay: 'red'
+                };
+
+                document.querySelectorAll('input[name="paymentMethod"]').forEach(function (radio) {
+                    radio.addEventListener('change', function () {
+                        // Reset all payment options
+                        document.querySelectorAll('.payment-option').forEach(function (opt) {
+                            opt.classList.remove('border-indigo-500', 'border-blue-500', 'border-pink-500', 'border-red-500', 'bg-indigo-50/30', 'bg-blue-50/30', 'bg-pink-50/30', 'bg-red-50/30');
+                            opt.classList.add('border-gray-200');
+                            const check = opt.querySelector('.payment-check');
+                            if (check) check.classList.add('hidden');
+                        });
+
+                        // Hide all info panels
+                        document.querySelectorAll('.payment-info-panel').forEach(function (panel) {
+                            panel.classList.add('hidden');
+                        });
+
+                        // Highlight selected option
+                        const selectedOption = this.closest('.payment-option');
+                        const method = selectedOption.dataset.method;
+                        const color = colorMap[method] || 'indigo';
+                        selectedOption.classList.remove('border-gray-200');
+                        selectedOption.classList.add(`border-${color}-500`, `bg-${color}-50/30`);
+                        const check = selectedOption.querySelector('.payment-check');
+                        if (check) check.classList.remove('hidden');
+
+                        // Show info panel if exists (next sibling of parent label)
+                        const parentDiv = selectedOption.parentElement;
+                        const infoPanel = parentDiv.querySelector('.payment-info-panel');
+                        if (infoPanel) {
+                            infoPanel.classList.remove('hidden');
+                        }
+                    });
+                });
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
                 updateOrderSummary();
-            });
-            
-            // Add event listeners for item checkboxes
-            document.querySelectorAll('.item-checkbox').forEach(function(checkbox) {
-                checkbox.addEventListener('change', function() {
-                    // Update select all checkbox state
-                    const allCheckboxes = document.querySelectorAll('.item-checkbox');
-                    const checkedCheckboxes = document.querySelectorAll('.item-checkbox:checked');
-                    const selectAllCheckbox = document.getElementById('selectAll');
-                    
-                    if (checkedCheckboxes.length === 0) {
-                        selectAllCheckbox.checked = false;
-                        selectAllCheckbox.indeterminate = false;
-                    } else if (checkedCheckboxes.length === allCheckboxes.length) {
-                        selectAllCheckbox.checked = true;
-                        selectAllCheckbox.indeterminate = false;
-                    } else {
-                        selectAllCheckbox.checked = false;
-                        selectAllCheckbox.indeterminate = true;
-                    }
-                    
-                    // Update order summary when checkbox changes
+                loadCartCount(); // Load cart count on page load
+                initPaymentMethodToggle();
+
+                // Add event listener for select all checkbox
+                document.getElementById('selectAll').addEventListener('change', function () {
+                    const itemCheckboxes = document.querySelectorAll('.item-checkbox');
+                    itemCheckboxes.forEach(checkbox => {
+                        checkbox.checked = this.checked;
+                    });
+
+                    // Update order summary when select all changes
                     updateOrderSummary();
                 });
-            });
-            
-            // Add event listeners for quantity buttons
-            document.querySelectorAll('.btn-quantity-minus').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    const cartItem = this.closest('.cart-item');
-                    const itemId = cartItem.dataset.id;
-                    updateQuantity(itemId, -1);
+
+                // Add event listeners for item checkboxes
+                document.querySelectorAll('.item-checkbox').forEach(function (checkbox) {
+                    checkbox.addEventListener('change', function () {
+                        // Update select all checkbox state
+                        const allCheckboxes = document.querySelectorAll('.item-checkbox');
+                        const checkedCheckboxes = document.querySelectorAll('.item-checkbox:checked');
+                        const selectAllCheckbox = document.getElementById('selectAll');
+
+                        if (checkedCheckboxes.length === 0) {
+                            selectAllCheckbox.checked = false;
+                            selectAllCheckbox.indeterminate = false;
+                        } else if (checkedCheckboxes.length === allCheckboxes.length) {
+                            selectAllCheckbox.checked = true;
+                            selectAllCheckbox.indeterminate = false;
+                        } else {
+                            selectAllCheckbox.checked = false;
+                            selectAllCheckbox.indeterminate = true;
+                        }
+
+                        // Update order summary when checkbox changes
+                        updateOrderSummary();
+                    });
+                });
+
+                // Add event listeners for quantity buttons
+                document.querySelectorAll('.btn-quantity-minus').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        const cartItem = this.closest('.cart-item');
+                        const itemId = cartItem.dataset.id;
+                        updateQuantity(itemId, -1);
+                    });
+                });
+
+                document.querySelectorAll('.btn-quantity-plus').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        const cartItem = this.closest('.cart-item');
+                        const itemId = cartItem.dataset.id;
+                        updateQuantity(itemId, 1);
+                    });
                 });
             });
-            
-            document.querySelectorAll('.btn-quantity-plus').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    const cartItem = this.closest('.cart-item');
-                    const itemId = cartItem.dataset.id;
-                    updateQuantity(itemId, 1);
-                });
-            });
-        });
-    </script>
+        </script>
 </body>
+
 </html>

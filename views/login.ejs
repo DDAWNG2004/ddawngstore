@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/css/style.css">
 </head>
+
 <body class="bg-gray-50 min-h-screen flex items-center justify-center">
     <div class="max-w-md w-full space-y-8">
         <div class="bg-white rounded-lg shadow-md p-8">
@@ -61,7 +63,8 @@
                 </div>
 
                 <!-- Success Message -->
-                <div id="successMessage" class="hidden p-3 bg-green-100 border border-green-400 text-green-700 rounded-md">
+                <div id="successMessage"
+                    class="hidden p-3 bg-green-100 border border-green-400 text-green-700 rounded-md">
                     <span id="successText"></span>
                 </div>
 
@@ -69,9 +72,14 @@
                     <button type="submit"
                         class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         <span class="absolute left-0 inset-y-0 flex items-center pl-3">
-                            <svg class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0h10a5 5 0 0110 0v2a2 2 0 002 2H5a2 2 0 002-2zm0 0a1 1 0 110 2v8a1 1 0 110-2H4a1 1 0 110-2v-8z" clip-rule="evenodd"/>
-                                <path fill-rule="evenodd" d="M4.5 7.5a.5.5 0 00-.707-.293l-2-2-.03a.5.5 0 00-.708-.708L4.5 6.5a.5.5 0 00-.707-.293l2-2.03a.5.5 0 00-.708-.708l-2 2.03a.5.5 0 00.707.293.707.293.707.293.707.293.707-.293.707.293-.707z" clip-rule="evenodd"/>
+                            <svg class="h-5 w-5 text-indigo-500 group-hover:text-indigo-400"
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M5 9V7a5 5 0 0110 0h10a5 5 0 0110 0v2a2 2 0 002 2H5a2 2 0 002-2zm0 0a1 1 0 110 2v8a1 1 0 110-2H4a1 1 0 110-2v-8z"
+                                    clip-rule="evenodd" />
+                                <path fill-rule="evenodd"
+                                    d="M4.5 7.5a.5.5 0 00-.707-.293l-2-2-.03a.5.5 0 00-.708-.708L4.5 6.5a.5.5 0 00-.707-.293l2-2.03a.5.5 0 00-.708-.708l-2 2.03a.5.5 0 00.707.293.707.293.707.293.707.293.707-.293.707.293-.707z"
+                                    clip-rule="evenodd" />
                             </svg>
                         </span>
                         <span id="loginButtonText">Đăng nhập</span>
@@ -94,7 +102,7 @@
     <script>
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const loginButton = e.target.querySelector('button[type="submit"]');
@@ -103,15 +111,15 @@
             const errorText = document.getElementById('errorText');
             const successMessage = document.getElementById('successMessage');
             const successText = document.getElementById('successText');
-            
+
             // Hide previous messages
             errorMessage.classList.add('hidden');
             successMessage.classList.add('hidden');
-            
+
             // Disable button and show loading
             loginButton.disabled = true;
             loginButtonText.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Đang đăng nhập...';
-            
+
             try {
                 const response = await fetch('/admin/login', {
                     method: 'POST',
@@ -120,17 +128,15 @@
                     },
                     body: JSON.stringify({ email, password })
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     successText.textContent = result.message;
                     successMessage.classList.remove('hidden');
-                    
-                    // Redirect after delay
-                    setTimeout(() => {
-                        window.location.href = result.redirect || '/admin';
-                    }, 1000);
+
+                    // Redirect immediately
+                    window.location.href = result.redirect || '/admin';
                 } else {
                     errorText.textContent = result.message;
                     errorMessage.classList.remove('hidden');
@@ -146,4 +152,5 @@
         });
     </script>
 </body>
+
 </html>

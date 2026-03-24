@@ -18,21 +18,21 @@ const { testConnection } = require('./utils/database');
 
 // Database configuration
 const sequelize = new Sequelize(
-  process.env.DB_NAME || 'ddawngstore',
-  process.env.DB_USER || 'root',
-  process.env.DB_PASSWORD || '',
-  {
-    host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 3306,
-    dialect: 'mysql',
-    logging: true, // Enable logging để debug
-    pool: {
-      max: 5,
-      min: 0,
-      acquire: 30000,
-      idle: 10000
+    process.env.DB_NAME || 'ddawngstore',
+    process.env.DB_USER || 'root',
+    process.env.DB_PASSWORD || '',
+    {
+        host: process.env.DB_HOST || 'localhost',
+        port: process.env.DB_PORT || 3306,
+        dialect: 'mysql',
+        logging: false, // Tắt logging để màn hình console gọn gàng hơn
+        pool: {
+            max: 5,
+            min: 0,
+            acquire: 30000,
+            idle: 10000
+        }
     }
-  }
 );
 
 const app = express();
@@ -59,7 +59,7 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ 
+const upload = multer({
     storage: storage,
     limits: {
         fileSize: 5 * 1024 * 1024 // 5MB limit
@@ -121,7 +121,7 @@ app.post('/debug-form', upload.any(), (req, res) => {
     console.log('🔍 Debug form submission');
     console.log('📝 Request body:', req.body);
     console.log('📁 Request files:', req.files);
-    res.json({ 
+    res.json({
         message: 'Debug form received',
         body: req.body,
         files: req.files ? req.files.map(f => ({ fieldname: f.fieldname, originalname: f.originalname, size: f.size })) : []
@@ -134,11 +134,11 @@ app.post('/admin/products/add', upload.any(), async (req, res) => {
     console.log('📝 Request body keys:', Object.keys(req.body));
     console.log('📝 Full request body:', req.body);
     console.log('📁 Uploaded files:', req.files);
-    
+
     const transaction = await sequelize.transaction();
     try {
         const { productName, productCode, description, category, price, salePrice, stock, sku, status, variants } = req.body;
-        
+
         console.log('📊 Parsed data:', {
             productName,
             productCode,
@@ -148,7 +148,7 @@ app.post('/admin/products/add', upload.any(), async (req, res) => {
             status,
             variants_count: variants ? (Array.isArray(variants) ? variants.length : 1) : 0
         });
-        
+
         // Thêm sản phẩm mới
         const insertResult = await sequelize.query(`
             INSERT INTO products (name, description, price, category_id, stock_quantity, sku, status)
@@ -158,21 +158,21 @@ app.post('/admin/products/add', upload.any(), async (req, res) => {
             transaction,
             type: Sequelize.QueryTypes.INSERT
         });
-        
+
         const productId = insertResult[0];
         console.log('✅ Product added with ID:', productId);
-        
+
         if (!productId) {
             throw new Error('Failed to get product ID after insertion');
         }
-        
+
         // Xử lý hình ảnh chính
         let mainImageUrl = null;
         if (req.files && req.files.mainImage && req.files.mainImage.length > 0) {
             const mainImage = req.files.mainImage[0];
             mainImageUrl = `/uploads/${mainImage.filename}`;
             console.log('📸 Main image uploaded:', mainImageUrl);
-            
+
             await sequelize.query(`
                 INSERT INTO product_images (product_id, image_url, alt_text, is_primary)
                 VALUES (?, ?, ?, ?)
@@ -181,13 +181,13 @@ app.post('/admin/products/add', upload.any(), async (req, res) => {
                 transaction
             });
         }
-        
+
         // Xử lý hình ảnh bổ sung
         if (req.files && req.files.additionalImages && req.files.additionalImages.length > 0) {
             for (let i = 0; i < req.files.additionalImages.length; i++) {
                 const additionalImage = req.files.additionalImages[i];
                 const imageUrl = `/uploads/${additionalImage.filename}`;
-                
+
                 await sequelize.query(`
                     INSERT INTO product_images (product_id, image_url, alt_text, is_primary)
                     VALUES (?, ?, ?, ?)
@@ -197,21 +197,21 @@ app.post('/admin/products/add', upload.any(), async (req, res) => {
                 });
             }
         }
-        
+
         // Xử lý variants
         if (variants) {
             const variantsArray = Array.isArray(variants) ? variants : [variants];
             console.log('📦 Processing variants:', variantsArray.length);
-            
+
             for (const variantData of variantsArray) {
                 try {
                     if (!variantData || variantData.trim() === '' || variantData === '{' || variantData === 'undefined') {
                         console.log('⚠️ Skipping empty or invalid variant data');
                         continue;
                     }
-                    
+
                     const variant = JSON.parse(variantData);
-                    
+
                     if (!variant.sizeId && !variant.size_id) {
                         console.log('⚠️ Skipping variant without size ID');
                         continue;
@@ -220,18 +220,18 @@ app.post('/admin/products/add', upload.any(), async (req, res) => {
                         console.log('⚠️ Skipping variant without color ID');
                         continue;
                     }
-                    
+
                     const variantSku = sku ? `${sku}-${variant.sizeName || variant.size_id}-${variant.colorName || variant.color_id}` : `PRD${productId}-${variant.sizeName || variant.size_id}-${variant.colorName || variant.color_id}`;
-                    
+
                     await sequelize.query(`
                         INSERT INTO product_variants (product_id, size_id, color_id, stock_quantity, sku)
                         VALUES (?, ?, ?, ?, ?)
                     `, {
                         replacements: [
-                            productId, 
-                            variant.sizeId || variant.size_id, 
-                            variant.colorId || variant.color_id, 
-                            parseInt(variant.stock_quantity || variant.stock || 0), 
+                            productId,
+                            variant.sizeId || variant.size_id,
+                            variant.colorId || variant.color_id,
+                            parseInt(variant.stock_quantity || variant.stock || 0),
                             variantSku
                         ],
                         transaction
@@ -241,26 +241,26 @@ app.post('/admin/products/add', upload.any(), async (req, res) => {
                 }
             }
         }
-        
+
         await transaction.commit();
-        
+
         // Cập nhật lại tổng stock từ variants
         const [totalStock] = await sequelize.query(`
             SELECT SUM(stock_quantity) as total FROM product_variants WHERE product_id = ?
         `, {
             replacements: [productId]
         });
-        
+
         const finalStock = totalStock[0]?.total || 0;
-        
+
         await sequelize.query(`
             UPDATE products SET stock_quantity = ? WHERE id = ?
         `, {
             replacements: [finalStock, productId]
         });
-        
+
         console.log('✅ Product stock updated to:', finalStock);
-        
+
         res.redirect('/admin/products');
     } catch (error) {
         await transaction.rollback();
@@ -273,15 +273,15 @@ app.post('/admin/products/add', upload.any(), async (req, res) => {
 app.get('/test-db', async (req, res) => {
     try {
         console.log('🔍 Testing database connection...');
-        
+
         const result = await testConnection(sequelize);
-        
+
         if (result.success) {
             // Test basic queries
             const [products] = await sequelize.query('SELECT COUNT(*) as count FROM products');
             const [users] = await sequelize.query('SELECT COUNT(*) as count FROM users');
             const [orders] = await sequelize.query('SELECT COUNT(*) as count FROM orders');
-            
+
             res.json({
                 success: true,
                 message: result.message,
@@ -307,7 +307,7 @@ app.get('/test-db', async (req, res) => {
 async function addSampleUsers() {
     try {
         console.log('🔄 Adding sample users...');
-        
+
         const sampleUsers = [
             { username: 'an.nguyen', full_name: 'Nguyễn Văn An', email: 'an.nguyen@email.com', password_hash: '123456', phone: '0912345678', role: 'user' },
             { username: 'binh.tran', full_name: 'Trần Thị Bình', email: 'binh.tran@email.com', password_hash: '123456', phone: '0923456789', role: 'user' },
@@ -315,7 +315,7 @@ async function addSampleUsers() {
             { username: 'mai.pham', full_name: 'Phạm Thúy Mai', email: 'mai.pham@email.com', password_hash: '123456', phone: '0945678901', role: 'user' },
             { username: 'admin', full_name: 'Admin User', email: 'admin@ddawngstore.com', password_hash: 'admin123', phone: '0901234567', role: 'admin' }
         ];
-        
+
         for (const user of sampleUsers) {
             try {
                 const [existing] = await sequelize.query(`
@@ -323,7 +323,7 @@ async function addSampleUsers() {
                 `, {
                     replacements: [user.email]
                 });
-                
+
                 if (existing.length === 0) {
                     await sequelize.query(`
                         INSERT INTO users (username, full_name, email, password_hash, phone, role, is_active, created_at, updated_at)
@@ -333,13 +333,13 @@ async function addSampleUsers() {
                     });
                     console.log(`✅ Added user: ${user.email}`);
                 } else {
-                    console.log(`⚠️ User already exists: ${user.email}`);
+                    // console.log(`⚠️ User already exists: ${user.email}`);
                 }
             } catch (error) {
                 console.error(`❌ Error adding user ${user.email}:`, error);
             }
         }
-        
+
         console.log('✅ Sample users process completed');
     } catch (error) {
         console.error('❌ Error in addSampleUsers:', error);
@@ -349,7 +349,7 @@ async function addSampleUsers() {
 // Test database connection
 sequelize.authenticate().then(() => {
     console.log('✅ Database connected successfully!');
-    
+
     // Auto-add sample users
     addSampleUsers();
 }).catch(err => {
@@ -359,12 +359,12 @@ sequelize.authenticate().then(() => {
 // Add global error handler
 app.use((err, req, res, next) => {
     logger.error('Global error handler caught error:', err);
-    
+
     // Don't send response if headers already sent
     if (res.headersSent) {
         return next(err);
     }
-    
+
     // Send error response
     res.status(500).json({
         success: false,

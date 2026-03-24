@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Mã Giảm Giá | DDAWNG Store Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <header>
+        <style>
+            .toggle-checkbox:checked {
+                right: 0;
+                border-color: #68D391;
+            }
+
+            .toggle-checkbox:checked+.toggle-label {
+                background-color: #68D391;
+            }
+        </style>
+    </header>
+</head>
+
+<body class="bg-gray-50 font-sans antialiased text-gray-900">
+    <%- include('partials/admin-header', { activePage: 'coupons' }) %>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <!-- Header Actions -->
+            <div class="sm:flex sm:items-center">
+                <div class="sm:flex-auto">
+                    <h1 class="text-2xl font-bold leading-tight text-gray-900 sm:text-3xl sm:truncate">Quản lý Mã Giảm
+                        Giá</h1>
+                </div>
+                <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+                    <button onclick="openModal('add')" type="button"
+                        class="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        Thêm mã mới
+                    </button>
+                </div>
+            </div>
+
+            <!-- Thông báo -->
+            <!-- <% if (messages && messages.success) { %>
+            <div class="mt-6 p-4 bg-green-50 border border-green-200 text-green-700 rounded shadow-sm">
+                <%= messages.success %>
+            </div>
+        <% } %>
+        <% if (messages && messages.error) { %>
+            <div class="mt-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded shadow-sm">
+                <%= messages.error %>
+            </div>
+        <% } %> -->
+
+            <!-- Bulk Actions -->
+            <div class="mt-6 mb-4 hidden" id="bulkActions">
+                <div class="bg-blue-50 border border-blue-200 rounded-md p-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <span class="text-sm text-blue-800">
+                                Đã chọn <span id="selectedCount" class="font-bold">0</span> mã giảm giá
+                            </span>
+                        </div>
+                        <div class="flex space-x-3">
+                            <button onclick="bulkDelete()"
+                                class="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700">
+                                Xóa đã chọn
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="mt-8 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="md:col-span-2">
+                        <div class="relative">
+                            <input type="text" id="searchInput" placeholder="Tìm kiếm mã code..."
+                                class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm px-4 py-2 border">
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md:col-span-1">
+                        <select id="statusFilter"
+                            class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm px-3 py-2 border bg-white">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="Hoạt động">Hoạt động</option>
+                            <option value="Bị khoá">Bị khoá</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-1">
+                        <select id="typeFilter"
+                            class="block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm px-3 py-2 border bg-white">
+                            <option value="">Tất cả mục giảm</option>
+                            <option value="%">Phần trăm (%)</option>
+                            <option value="₫">Tiền mặt (VNĐ)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white shadow overflow-hidden sm:rounded-md border border-gray-100">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200" id="couponsTable">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left w-4">
+                                    <input type="checkbox" id="selectAllCoupons"
+                                        class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                </th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Mã Code</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Giảm giá</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Đơn Tối Thiểu</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Hợp lệ từ - đến</th>
+                                <th
+                                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Đã sử dụng</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Trạng thái</th>
+                                <th
+                                    class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200" id="couponsTbody">
+                            <% if (coupons && coupons.length> 0) { %>
+                                <% coupons.forEach(function(coupon) { %>
+                                    <tr class="hover:bg-gray-50 transition-colors">
+                                        <td class="px-6 py-4 whitespace-nowrap w-4">
+                                            <input type="checkbox" data-coupon-id="<%= coupon.id %>"
+                                                class="coupon-checkbox rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center">
+                                                <span
+                                                    class="font-mono bg-indigo-50 text-indigo-700 px-2 flex items-center h-7 rounded border border-indigo-100 font-bold">
+                                                    <%= coupon.code %>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 font-medium text-gray-900">
+                                            <% if (coupon.discount_type==='percent' ) { %>
+                                                <%= parseInt(coupon.discount_value) %>%
+                                                    <% } else { %>
+                                                        <%= new Intl.NumberFormat('vi-VN', { style: 'currency' ,
+                                                            currency: 'VND' }).format(coupon.discount_value) %>
+                                                            <% } %>
+                                        </td>
+                                        <td class="px-6 py-4 text-gray-500">
+                                            <%= new Intl.NumberFormat('vi-VN', { style: 'currency' , currency: 'VND'
+                                                }).format(coupon.min_purchase_amount) %>
+                                        </td>
+                                        <td class="px-6 py-4 text-gray-500 text-xs text-wrap w-48">
+                                            <% const vFrom=coupon.valid_from ? new
+                                                Date(coupon.valid_from).toLocaleString('vi-VN') : 'Luôn mở' ; const
+                                                vUntil=coupon.valid_until ? new
+                                                Date(coupon.valid_until).toLocaleString('vi-VN') : 'Không giới hạn' ; %>
+                                                <div>T: <%= vFrom %>
+                                                </div>
+                                                <div>Đ: <%= vUntil %>
+                                                </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-center">
+                                            <span class="text-indigo-600 font-bold">
+                                                <%= coupon.usage_count || 0 %>
+                                            </span> /
+                                            <span class="text-gray-500">
+                                                <%= coupon.usage_limit || '∞' %>
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <% if (coupon.is_active) { %>
+                                                <span
+                                                    class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Hoạt
+                                                    động</span>
+                                                <% } else { %>
+                                                    <span
+                                                        class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-600">Bị
+                                                        khoá</span>
+                                                    <% } %>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">
+                                            <div class="flex justify-center space-x-2">
+                                                <button data-coupon="<%= JSON.stringify(coupon) %>"
+                                                    onclick='openModal("edit", JSON.parse(this.getAttribute("data-coupon")))'
+                                                    class="text-indigo-600 hover:text-indigo-900" title="Chỉnh sửa">
+                                                    <svg class="h-5 w-5" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                                    </svg>
+                                                </button>
+                                                <button onclick="deleteCoupon('<%= coupon.id %>')"
+                                                    class="text-red-600 hover:text-red-900" title="Xóa mã">
+                                                    <svg class="h-5 w-5" fill="none" stroke="currentColor"
+                                                        viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L4 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="7" class="px-6 py-12 text-center text-gray-500">
+                                                    <div class="flex flex-col items-center">
+                                                        <svg class="h-12 w-12 text-gray-300 mb-3" fill="none"
+                                                            viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                                                        </svg>
+                                                        Chưa có mã giảm giá nào. Nhanh tay "Thêm mã mới" để khách dùng
+                                                        nào!
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <% if (typeof pagination !=='undefined' && pagination.totalPages>= 1) { %>
+                    <%- include('partials/pagination', { pagination: pagination, query: '' }) %>
+                        <% } %>
+            </div>
+            </div>
+        </main>
+
+        <!-- Modal Form Thêm / Sửa -->
+        <div id="couponModal"
+            class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-[100]">
+            <div class="relative top-10 mx-auto p-5 border w-[600px] shadow-xl rounded-xl bg-white">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 id="modalTitle" class="text-xl font-bold text-gray-900">Thêm Mã Giảm Giá Mới</h3>
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <form id="couponForm" action="/admin/coupons/add" method="POST" class="space-y-4">
+                    <input type="hidden" name="id" id="couponId">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Mã Code *</label>
+                            <input type="text" name="code" id="couponCode" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 uppercase">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Trạng thái</label>
+                            <select name="is_active" id="couponStatus"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                                <option value="1">Hoạt động (Active)</option>
+                                <option value="0">Tạm khóa (Inactive)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Kiểu Giảm Giá *</label>
+                            <select name="discount_type" id="discountType" required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                                onchange="updateValueLabel()">
+                                <option value="fixed">Tiền mặt (VNĐ)</option>
+                                <option value="percent">Phần trăm (%)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1" id="valLabel">Mức Giảm *</label>
+                            <input type="number" name="discount_value" id="discountValue" required min="1"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Đơn tối thiểu (VNĐ)</label>
+                            <input type="number" name="min_purchase_amount" id="minAmount" value="0" min="0"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Tổng Số Lượng (Bỏ trống =
+                                ∞)</label>
+                            <input type="number" name="usage_limit" id="usageLimit" min="1"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Từ Ngày</label>
+                            <input type="datetime-local" name="valid_from" id="validFrom"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Đến Ngày</label>
+                            <input type="datetime-local" name="valid_until" id="validUntil"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-3 mt-6">
+                        <button type="button" onclick="closeModal()"
+                            class="px-4 py-2 bg-white border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none">Hủy</button>
+                        <button type="submit"
+                            class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:outline-none">Lưu
+                            Thay Đổi</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Form ẩn xóa -->
+        <form id="deleteForm" method="POST" class="hidden"></form>
+
+        <script>
+            // Lấy các element bộ lọc
+            const searchInput = document.getElementById('searchInput');
+            const statusFilter = document.getElementById('statusFilter');
+            const typeFilter = document.getElementById('typeFilter');
+            const couponsTbody = document.getElementById('couponsTbody');
+
+            // Cài đặt AddEventListener để lọc tự động không cần refetch back-end
+            if (searchInput && statusFilter && typeFilter && couponsTbody) {
+                const filterTable = () => {
+                    const searchVal = searchInput.value.toLowerCase().trim();
+                    const statusVal = statusFilter.value.toLowerCase();
+                    const typeVal = typeFilter.value.toLowerCase(); // % hoặc ₫
+
+                    const rows = couponsTbody.querySelectorAll('tr:not(.no-filter)');
+                    rows.forEach(row => {
+                        const code = (row.querySelector('.font-mono')?.textContent || '').replace(/\s+/g, ' ').toLowerCase().trim();
+                        const discount = (row.children[2]?.textContent || '').replace(/\s+/g, ' ').toLowerCase().trim();
+                        const statusTd = (row.children[6]?.textContent || '').replace(/\s+/g, ' ').toLowerCase().trim();
+
+                        let matchSearch = code.includes(searchVal);
+                        let matchStatus = statusVal === '' || statusTd.includes(statusVal);
+                        let matchType = typeVal === '' || discount.includes(typeVal);
+
+                        if (matchSearch && matchStatus && matchType) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                };
+
+                searchInput.addEventListener('input', filterTable);
+                statusFilter.addEventListener('change', filterTable);
+                typeFilter.addEventListener('change', filterTable);
+            }
+
+            function updateValueLabel() {
+                const type = document.getElementById('discountType').value;
+                document.getElementById('valLabel').innerText = type === 'percent' ? 'Mức Giảm (%) *' : 'Mức Giảm (VNĐ) *';
+            }
+
+            function openModal(mode, data = null) {
+                const modal = document.getElementById('couponModal');
+                const form = document.getElementById('couponForm');
+                const title = document.getElementById('modalTitle');
+
+                // Xóa validation cũ
+                form.reset();
+
+                function dt(val) {
+                    if (!val) return '';
+                    // convert MySQL datetime back to local YYYY-MM-DDTHH:mm
+                    const d = new Date(val);
+                    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+                    return d.toISOString().slice(0, 16);
+                }
+
+                if (mode === 'add') {
+                    title.innerText = 'Thêm Mã Giảm Giá Mới';
+                    form.action = '/admin/coupons/add';
+                    document.getElementById('couponId').value = '';
+                    document.getElementById('couponCode').readOnly = false;
+                    document.getElementById('couponCode').classList.remove('bg-gray-100');
+                } else {
+                    title.innerText = 'Cập Nhật Mã Giảm Giá: ' + data.code;
+                    form.action = `/admin/coupons/edit/${data.id}`;
+                    document.getElementById('couponId').value = data.id;
+                    document.getElementById('couponCode').value = data.code;
+                    document.getElementById('couponCode').readOnly = true;
+                    document.getElementById('couponCode').classList.add('bg-gray-100');
+
+                    document.getElementById('discountType').value = data.discount_type;
+                    document.getElementById('discountValue').value = data.discount_value;
+                    document.getElementById('minAmount').value = data.min_purchase_amount;
+                    document.getElementById('usageLimit').value = data.usage_limit || '';
+
+                    if (data.valid_from) document.getElementById('validFrom').value = dt(data.valid_from);
+                    if (data.valid_until) document.getElementById('validUntil').value = dt(data.valid_until);
+                    document.getElementById('couponStatus').value = data.is_active ? "1" : "0";
+                }
+                updateValueLabel();
+                modal.classList.remove('hidden');
+            }
+
+            function closeModal() {
+                document.getElementById('couponModal').classList.add('hidden');
+            }
+
+            function deleteCoupon(id) {
+                if (confirm('Bạn có chắc chắn muốn xóa mã giảm giá này? Nếu nó đã được sử dụng, có thể gây mất đồng bộ dữ liệu Order lịch sử. Tốt nhất bạn nên Tạm Khóa nó thay vì Xóa.')) {
+                    const form = document.getElementById('deleteForm');
+                    form.action = `/admin/coupons/delete/${id}`;
+                    form.submit();
+                }
+            }
+
+            // Cập nhật UI Bulk Actions
+            function updateBulkActions() {
+                const bulkActions = document.getElementById('bulkActions');
+                const selectedCountSpan = document.getElementById('selectedCount');
+                if (!bulkActions || !selectedCountSpan) return;
+
+                const checkedBoxes = document.querySelectorAll('.coupon-checkbox:checked');
+                const visibleCheckedBoxes = Array.from(checkedBoxes).filter(cb => cb.closest('tr').style.display !== 'none');
+
+                const count = visibleCheckedBoxes.length;
+                selectedCountSpan.textContent = count;
+
+                if (count > 0) {
+                    bulkActions.classList.remove('hidden');
+                } else {
+                    bulkActions.classList.add('hidden');
+                }
+            }
+
+            async function bulkDelete() {
+                const checkedBoxes = document.querySelectorAll('.coupon-checkbox:checked');
+                const visibleCheckedBoxes = Array.from(checkedBoxes).filter(cb => cb.closest('tr').style.display !== 'none');
+                const ids = visibleCheckedBoxes.map(cb => cb.dataset.couponId);
+
+                if (ids.length === 0) return;
+
+                if (confirm(`Bạn có chắc chắn muốn xóa ${ids.length} mã giảm giá đã chọn? Hành động này không thể hoàn tác.`)) {
+                    try {
+                        const response = await fetch('/admin/coupons/bulk-delete', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ ids })
+                        });
+
+                        const result = await response.json();
+                        if (result.success) {
+                            window.location.reload();
+                        } else {
+                            alert(result.message || 'Có lỗi xảy ra khi xóa dữ liệu');
+                        }
+                    } catch (error) {
+                        console.error('Lỗi bulk delete:', error);
+                        alert('Có lỗi xảy ra khi gửi yêu cầu xóa');
+                    }
+                }
+            }
+
+            // Xử lý Checkbox Master Check All
+            document.addEventListener('DOMContentLoaded', () => {
+                const selectAllCheckbox = document.getElementById('selectAllCoupons');
+                if (selectAllCheckbox) {
+                    selectAllCheckbox.addEventListener('change', (e) => {
+                        const isChecked = e.target.checked;
+                        const rowCheckboxes = document.querySelectorAll('.coupon-checkbox');
+                        rowCheckboxes.forEach(checkbox => {
+                            const row = checkbox.closest('tr');
+                            if (row.style.display !== 'none') {
+                                checkbox.checked = isChecked;
+                            }
+                        });
+                        updateBulkActions();
+                    });
+                }
+
+                // Cập nhật trạng thái Master Checkbox khi click Checkbox Con
+                document.querySelectorAll('.coupon-checkbox').forEach(checkbox => {
+                    checkbox.addEventListener('change', () => {
+                        if (!selectAllCheckbox) return;
+                        const rowCheckboxes = document.querySelectorAll('.coupon-checkbox');
+                        const visibleCheckboxes = Array.from(rowCheckboxes).filter(cb => cb.closest('tr').style.display !== 'none');
+                        const allChecked = visibleCheckboxes.every(cb => cb.checked);
+                        const someChecked = visibleCheckboxes.some(cb => cb.checked);
+                        selectAllCheckbox.checked = allChecked && visibleCheckboxes.length > 0;
+                        selectAllCheckbox.indeterminate = someChecked && !allChecked;
+                        updateBulkActions();
+                    });
+                });
+            });
+        </script>
+</body>
+
+</html>
