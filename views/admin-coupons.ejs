@@ -43,16 +43,16 @@
             </div>
 
             <!-- Thông báo -->
-            <!-- <% if (messages && messages.success) { %>
+            <% if (messages && messages.success) { %>
             <div class="mt-6 p-4 bg-green-50 border border-green-200 text-green-700 rounded shadow-sm">
                 <%= messages.success %>
             </div>
-        <% } %>
-        <% if (messages && messages.error) { %>
+            <% } %>
+            <% if (messages && messages.error) { %>
             <div class="mt-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded shadow-sm">
                 <%= messages.error %>
             </div>
-        <% } %> -->
+            <% } %>
 
             <!-- Bulk Actions -->
             <div class="mt-6 mb-4 hidden" id="bulkActions">
@@ -488,6 +488,31 @@
 
             // Xử lý Checkbox Master Check All
             document.addEventListener('DOMContentLoaded', () => {
+                // Form validation for coupon creation/editing
+                const couponForm = document.getElementById('couponForm');
+                if (couponForm) {
+                    couponForm.addEventListener('submit', (e) => {
+                        const discountType = document.getElementById('discountType').value;
+                        const discountValue = parseFloat(document.getElementById('discountValue').value);
+                        const validFrom = document.getElementById('validFrom').value;
+                        const validUntil = document.getElementById('validUntil').value;
+
+                        // Validation: Percentage discount cannot be greater than 100%
+                        if (discountType === 'percent' && discountValue > 100) {
+                            alert('Mức giảm phần trăm không được lớn hơn 100%!');
+                            e.preventDefault();
+                            return false;
+                        }
+
+                        // Validation: Start date must be before end date
+                        if (validFrom && validUntil && new Date(validFrom) >= new Date(validUntil)) {
+                            alert('Ngày bắt đầu phải trước ngày kết thúc!');
+                            e.preventDefault();
+                            return false;
+                        }
+                    });
+                }
+
                 const selectAllCheckbox = document.getElementById('selectAllCoupons');
                 if (selectAllCheckbox) {
                     selectAllCheckbox.addEventListener('change', (e) => {

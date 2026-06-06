@@ -347,8 +347,28 @@ async function addSampleUsers() {
 }
 
 // Test database connection
-sequelize.authenticate().then(() => {
+sequelize.authenticate().then(async () => {
     console.log('✅ Database connected successfully!');
+
+    // Create contact_messages table if not exists
+    try {
+        await sequelize.query(`
+            CREATE TABLE IF NOT EXISTS contact_messages (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                full_name VARCHAR(255) NOT NULL,
+                email VARCHAR(255) NOT NULL,
+                phone VARCHAR(50),
+                subject VARCHAR(255) NOT NULL,
+                message TEXT NOT NULL,
+                status ENUM('unread', 'read', 'replied') DEFAULT 'unread',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+        `);
+        console.log('✅ Table "contact_messages" checked/created successfully!');
+    } catch (dbErr) {
+        console.error('❌ Failed to ensure table "contact_messages":', dbErr);
+    }
 
     // Auto-add sample users
     addSampleUsers();

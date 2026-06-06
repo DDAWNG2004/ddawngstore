@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,225 +8,239 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
+
 <body class="bg-gray-50 flex flex-col min-h-screen">
     <!-- Header/Nav (Simplified) -->
     <%- include('partials/header') %>
 
-    <!-- Success Message Container -->
-    <main class="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-lg w-full space-y-6">
-            <!-- Success Card -->
-            <div class="bg-white shadow-xl rounded-2xl p-8 text-center border-t-4 border-green-500 transform transition-all hover:scale-[1.02]">
-                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                </div>
-                
-                <h2 class="text-3xl font-bold text-gray-900 mb-2">Cảm ơn bạn!</h2>
-                <p class="text-lg text-gray-600 mb-6">Đơn hàng của bạn đã được đặt thành công.</p>
-                
-                <div class="bg-gray-50 rounded-lg p-4 mb-6">
-                    <p class="text-sm text-gray-500 mb-1">Mã đơn hàng của bạn là:</p>
-                    <p class="text-xl font-mono font-bold text-indigo-600">#<%= orderId %></p>
-                </div>
-
-                <% 
-                    // Determine payment method from query string
-                    const paymentMethod = typeof method !== 'undefined' ? method : 'cod';
-                    const paymentLabels = {
-                        cod: 'Thanh toán khi nhận hàng (COD)',
-                        bank: 'Chuyển khoản ngân hàng',
-                        momo: 'Ví MoMo',
-                        vnpay: 'VNPay'
-                    };
-                    const paymentLabel = paymentLabels[paymentMethod] || 'Thanh toán khi nhận hàng (COD)';
-                %>
-
-                <div class="flex items-center justify-center gap-2 text-sm text-gray-600 mb-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                    </svg>
-                    Phương thức: <span class="font-semibold text-gray-900"><%= paymentLabel %></span>
-                </div>
-                
-                <div class="space-y-4 mt-6">
-                    <a href="/customer/orders" class="block w-full bg-indigo-600 text-white font-semibold py-3 px-4 rounded-xl hover:bg-indigo-700 transition shadow-md">
-                        Xem tình trạng đơn hàng
-                    </a>
-                    <a href="/" class="block w-full bg-white text-indigo-600 border border-indigo-200 font-semibold py-3 px-4 rounded-xl hover:bg-indigo-50 transition">
-                        Tiếp tục mua sắm
-                    </a>
-                </div>
-            </div>
-
-            <% if (paymentMethod === 'bank') { %>
-            <!-- Bank Transfer Instructions -->
-            <div class="bg-white shadow-lg rounded-2xl overflow-hidden border border-blue-200">
-                <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4">
-                    <h3 class="text-white font-bold text-lg flex items-center">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                        </svg>
-                        Hướng dẫn chuyển khoản ngân hàng
-                    </h3>
-                </div>
-                <div class="p-6">
-                    <div class="flex flex-col sm:flex-row gap-5">
-                        <div class="flex-shrink-0 mx-auto sm:mx-0">
-                            <div class="w-40 h-40 bg-gray-50 rounded-xl p-2 border border-blue-100 shadow-sm">
-                                <img src="/images/maqr.jpg" alt="QR Ngân hàng" class="w-full h-full object-contain">
-                            </div>
-                            <p class="text-xs text-center text-blue-500 mt-2 font-medium">Quét mã QR để chuyển khoản</p>
-                        </div>
-                        <div class="flex-1 space-y-3">
-                            <div class="space-y-2 text-sm">
-                                <div class="flex justify-between items-center py-1.5 border-b border-gray-100">
-                                    <span class="text-gray-500 font-medium">Chủ tài khoản:</span>
-                                    <span class="font-bold text-gray-900">NGUYEN THIEN HAI DANG</span>
-                                </div>
-                                <div class="flex justify-between items-center py-1.5 border-b border-gray-100">
-                                    <span class="text-gray-500 font-medium">Số tài khoản:</span>
-                                    <span class="font-bold text-gray-900 font-mono">0926837336</span>
-                                </div>
-                                <div class="flex justify-between items-center py-1.5 border-b border-gray-100">
-                                    <span class="text-gray-500 font-medium">Ngân hàng:</span>
-                                    <span class="font-bold text-gray-900">MB Bank (Ngân hàng Quân đội)</span>
-                                </div>
-                                <div class="flex justify-between items-center py-1.5">
-                                    <span class="text-gray-500 font-medium">Nội dung CK:</span>
-                                    <span class="font-bold text-indigo-600 font-mono">DH <%= orderId %></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                        <p class="text-sm text-blue-800 flex items-start font-medium">
-                            <svg class="w-5 h-5 mr-2 flex-shrink-0 mt-0.5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                            </svg>
-                            Chuyển khoản 24/7. Đơn hàng sẽ được xác nhận ngay sau khi thanh toán thành công.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <% } else if (paymentMethod === 'momo') { %>
-            <!-- MoMo Instructions -->
-            <div class="bg-white shadow-lg rounded-2xl overflow-hidden border border-pink-200">
-                <div class="px-6 py-4" style="background: linear-gradient(135deg, #ae2070, #d63384);">
-                    <h3 class="text-white font-bold text-lg flex items-center">
-                        <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-white/20 mr-2">
-                            <span class="text-white font-extrabold text-sm">M</span>
-                        </span>
-                        Hướng dẫn thanh toán MoMo
-                    </h3>
-                </div>
-                <div class="p-6">
-                    <div class="flex flex-col sm:flex-row gap-5">
-                        <div class="flex-shrink-0 mx-auto sm:mx-0">
-                            <div class="w-40 h-40 bg-gray-50 rounded-xl p-2 border border-pink-100 shadow-sm">
-                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=2|99|0912345678|DDAWNG%20STORE|0|0" alt="QR MoMo" class="w-full h-full object-contain">
-                            </div>
-                            <p class="text-xs text-center text-pink-500 mt-2 font-medium">Quét mã QR MoMo</p>
-                        </div>
-                        <div class="flex-1 space-y-3">
-                            <div class="space-y-2 text-sm">
-                                <div class="flex justify-between items-center py-1.5 border-b border-gray-100">
-                                    <span class="text-gray-500 font-medium">Số điện thoại:</span>
-                                    <span class="font-bold text-gray-900 font-mono">0912345678</span>
-                                </div>
-                                <div class="flex justify-between items-center py-1.5 border-b border-gray-100">
-                                    <span class="text-gray-500 font-medium">Tên tài khoản:</span>
-                                    <span class="font-bold text-gray-900">DDAWNG STORE</span>
-                                </div>
-                                <div class="flex justify-between items-center py-1.5">
-                                    <span class="text-gray-500 font-medium">Nội dung CK:</span>
-                                    <span class="font-bold font-mono" style="color: #ae2070;">DH <%= orderId %></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-4 p-3 bg-pink-50 border border-pink-200 rounded-lg">
-                        <p class="text-sm text-pink-800 flex items-start font-medium">
-                            <svg class="w-5 h-5 mr-2 flex-shrink-0 mt-0.5 text-pink-500" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                            </svg>
-                            Thanh toán MoMo được xác nhận ngay lập tức. Đơn hàng sẽ được xử lý ngay sau đó.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <% } else if (paymentMethod === 'vnpay') { %>
-            <!-- VNPay Instructions -->
-            <div class="bg-white shadow-lg rounded-2xl overflow-hidden border border-red-200">
-                <div class="bg-gradient-to-r from-red-600 to-red-500 px-6 py-4">
-                    <h3 class="text-white font-bold text-lg flex items-center">
-                        <span class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-white/20 mr-2">
-                            <span class="text-white font-extrabold text-xs">VN</span>
-                        </span>
-                        Hướng dẫn thanh toán VNPay
-                    </h3>
-                </div>
-                <div class="p-6">
-                    <div class="flex flex-col sm:flex-row gap-5">
-                        <div class="flex-shrink-0 mx-auto sm:mx-0">
-                            <div class="w-40 h-40 bg-gray-50 rounded-xl p-2 border border-red-100 shadow-sm">
-                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=vnpay://payment?amount=0&order=DH<%= orderId %>&merchant=DDAWNGSTORE" alt="QR VNPay" class="w-full h-full object-contain">
-                            </div>
-                            <p class="text-xs text-center text-red-500 mt-2 font-medium">Quét mã QR VNPay</p>
-                        </div>
-                        <div class="flex-1 space-y-3">
-                            <div class="space-y-2 text-sm">
-                                <div class="flex justify-between items-center py-1.5 border-b border-gray-100">
-                                    <span class="text-gray-500 font-medium">Mã merchant:</span>
-                                    <span class="font-bold text-gray-900 font-mono">DDAWNGSTORE</span>
-                                </div>
-                                <div class="flex justify-between items-center py-1.5 border-b border-gray-100">
-                                    <span class="text-gray-500 font-medium">Loại thẻ hỗ trợ:</span>
-                                    <span class="font-bold text-gray-900">Visa, Mastercard, JCB, ATM</span>
-                                </div>
-                                <div class="flex justify-between items-center py-1.5">
-                                    <span class="text-gray-500 font-medium">Nội dung GD:</span>
-                                    <span class="font-bold text-red-600 font-mono">DH <%= orderId %></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                        <p class="text-sm text-red-800 flex items-start font-medium">
-                            <svg class="w-5 h-5 mr-2 flex-shrink-0 mt-0.5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                            </svg>
-                            Thanh toán được xác nhận ngay lập tức. Hỗ trợ 24/7 và bảo mật đa tầng.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <% } else { %>
-            <!-- COD Info -->
-            <div class="bg-white shadow-lg rounded-2xl p-6 border border-emerald-200">
-                <div class="flex items-start gap-3">
-                    <div class="flex-shrink-0 w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
-                        <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+        <!-- Success Message Container -->
+        <main class="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-lg w-full space-y-6">
+                <!-- Success Card -->
+                <div
+                    class="bg-white shadow-xl rounded-2xl p-8 text-center border-t-4 border-green-500 transform transition-all hover:scale-[1.02]">
+                    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
                         </svg>
                     </div>
-                    <div>
-                        <h3 class="font-bold text-gray-900">Thanh toán khi nhận hàng</h3>
-                        <p class="text-sm text-gray-600 mt-1">
-                            Bạn sẽ thanh toán bằng tiền mặt khi shipper giao hàng tận nơi. 
-                            Vui lòng chuẩn bị đúng số tiền để việc giao hàng diễn ra thuận lợi.
+
+                    <h2 class="text-3xl font-bold text-gray-900 mb-2">Cảm ơn bạn!</h2>
+                    <p class="text-lg text-gray-600 mb-6">Đơn hàng của bạn đã được đặt thành công.</p>
+
+                    <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                        <p class="text-sm text-gray-500 mb-1">Mã đơn hàng của bạn là:</p>
+                        <p class="text-xl font-mono font-bold text-indigo-600">#<%= orderId %>
                         </p>
                     </div>
-                </div>
-            </div>
-            <% } %>
-        </div>
-    </main>
 
-    <!-- Footer (Simplified) -->
-    <footer class="bg-gray-800 text-white py-8 text-center text-sm">
-        <p>&copy; 2026 DDAWNG Store. All rights reserved.</p>
-    </footer>
+                    <% // Determine payment method from query string const paymentMethod=typeof method !=='undefined' ?
+                        method : 'cod' ; const paymentLabels={ cod: 'Thanh toán khi nhận hàng (COD)' ,
+                        bank: 'Chuyển khoản ngân hàng' , momo: 'Ví MoMo' , vnpay: 'VNPay' }; const
+                        paymentLabel=paymentLabels[paymentMethod] || 'Thanh toán khi nhận hàng (COD)' ; %>
+
+                        <div class="flex items-center justify-center gap-2 text-sm text-gray-600 mb-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z">
+                                </path>
+                            </svg>
+                            Phương thức: <span class="font-semibold text-gray-900">
+                                <%= paymentLabel %>
+                            </span>
+                        </div>
+
+                        <div class="space-y-4 mt-6">
+                            <a href="/customer/orders"
+                                class="block w-full bg-indigo-600 text-white font-semibold py-3 px-4 rounded-xl hover:bg-indigo-700 transition shadow-md">
+                                Xem tình trạng đơn hàng
+                            </a>
+                            <a href="/"
+                                class="block w-full bg-white text-indigo-600 border border-indigo-200 font-semibold py-3 px-4 rounded-xl hover:bg-indigo-50 transition">
+                                Tiếp tục mua sắm
+                            </a>
+                        </div>
+                </div>
+
+                <% if (paymentMethod==='bank' ) { %>
+                    <!-- Bank Transfer Instructions -->
+                    <div class="bg-white shadow-lg rounded-2xl overflow-hidden border border-blue-200">
+                        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4">
+                            <h3 class="text-white font-bold text-lg flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                                    </path>
+                                </svg>
+                                Hướng dẫn chuyển khoản ngân hàng
+                            </h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex flex-col sm:flex-row gap-5">
+
+                                <div class="flex-1 space-y-3">
+                                    <div class="space-y-2 text-sm">
+                                        <div class="flex justify-between items-center py-1.5 border-b border-gray-100">
+                                            <span class="text-gray-500 font-medium">Chủ tài khoản:</span>
+                                            <span class="font-bold text-gray-900">NGUYEN THIEN HAI DANG</span>
+                                        </div>
+                                        <div class="flex justify-between items-center py-1.5 border-b border-gray-100">
+                                            <span class="text-gray-500 font-medium">Số tài khoản:</span>
+                                            <span class="font-bold text-gray-900 font-mono">0926837336</span>
+                                        </div>
+                                        <div class="flex justify-between items-center py-1.5 border-b border-gray-100">
+                                            <span class="text-gray-500 font-medium">Ngân hàng:</span>
+                                            <span class="font-bold text-gray-900">MB Bank (Ngân hàng Quân đội)</span>
+                                        </div>
+                                        <div class="flex justify-between items-center py-1.5">
+                                            <span class="text-gray-500 font-medium">Nội dung CK:</span>
+                                            <span class="font-bold text-indigo-600 font-mono">DH <%= orderId %></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                                <p class="text-sm text-blue-800 flex items-start font-medium">
+                                    <svg class="w-5 h-5 mr-2 flex-shrink-0 mt-0.5 text-blue-500" fill="currentColor"
+                                        viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                    Chuyển khoản 24/7. Đơn hàng sẽ được xác nhận ngay sau khi thanh toán thành công.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <% } else if (paymentMethod==='momo' ) { %>
+                        <!-- MoMo Instructions -->
+                        <div class="bg-white shadow-lg rounded-2xl overflow-hidden border border-pink-200">
+                            <div class="px-6 py-4" style="background: linear-gradient(135deg, #ae2070, #d63384);">
+                                <h3 class="text-white font-bold text-lg flex items-center">
+                                    <span
+                                        class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-white/20 mr-2">
+                                        <span class="text-white font-extrabold text-sm">M</span>
+                                    </span>
+                                    Hướng dẫn thanh toán MoMo
+                                </h3>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex flex-col sm:flex-row gap-5">
+
+                                    <div class="flex-1 space-y-3">
+                                        <div class="space-y-2 text-sm">
+                                            <div
+                                                class="flex justify-between items-center py-1.5 border-b border-gray-100">
+                                                <span class="text-gray-500 font-medium">Số điện thoại:</span>
+                                                <span class="font-bold text-gray-900 font-mono">0912345678</span>
+                                            </div>
+                                            <div
+                                                class="flex justify-between items-center py-1.5 border-b border-gray-100">
+                                                <span class="text-gray-500 font-medium">Tên tài khoản:</span>
+                                                <span class="font-bold text-gray-900">DDAWNG STORE</span>
+                                            </div>
+                                            <div class="flex justify-between items-center py-1.5">
+                                                <span class="text-gray-500 font-medium">Nội dung CK:</span>
+                                                <span class="font-bold font-mono" style="color: #ae2070;">DH <%= orderId
+                                                        %></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-4 p-3 bg-pink-50 border border-pink-200 rounded-lg">
+                                    <p class="text-sm text-pink-800 flex items-start font-medium">
+                                        <svg class="w-5 h-5 mr-2 flex-shrink-0 mt-0.5 text-pink-500" fill="currentColor"
+                                            viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd"
+                                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                                clip-rule="evenodd"></path>
+                                        </svg>
+                                        Thanh toán MoMo được xác nhận ngay lập tức. Đơn hàng sẽ được xử lý ngay sau đó.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <% } else if (paymentMethod==='vnpay' ) { %>
+                            <!-- VNPay Instructions -->
+                            <div class="bg-white shadow-lg rounded-2xl overflow-hidden border border-red-200">
+                                <div class="bg-gradient-to-r from-red-600 to-red-500 px-6 py-4">
+                                    <h3 class="text-white font-bold text-lg flex items-center">
+                                        <span
+                                            class="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-white/20 mr-2">
+                                            <span class="text-white font-extrabold text-xs">VN</span>
+                                        </span>
+                                        Hướng dẫn thanh toán VNPay
+                                    </h3>
+                                </div>
+                                <div class="p-6">
+                                    <div class="flex flex-col sm:flex-row gap-5">
+
+                                        <div class="flex-1 space-y-3">
+                                            <div class="space-y-2 text-sm">
+                                                <div
+                                                    class="flex justify-between items-center py-1.5 border-b border-gray-100">
+                                                    <span class="text-gray-500 font-medium">Mã merchant:</span>
+                                                    <span class="font-bold text-gray-900 font-mono">DDAWNGSTORE</span>
+                                                </div>
+                                                <div
+                                                    class="flex justify-between items-center py-1.5 border-b border-gray-100">
+                                                    <span class="text-gray-500 font-medium">Loại thẻ hỗ trợ:</span>
+                                                    <span class="font-bold text-gray-900">Visa, Mastercard, JCB,
+                                                        ATM</span>
+                                                </div>
+                                                <div class="flex justify-between items-center py-1.5">
+                                                    <span class="text-gray-500 font-medium">Nội dung GD:</span>
+                                                    <span class="font-bold text-red-600 font-mono">DH <%= orderId %>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                                        <p class="text-sm text-red-800 flex items-start font-medium">
+                                            <svg class="w-5 h-5 mr-2 flex-shrink-0 mt-0.5 text-red-500"
+                                                fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd"
+                                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                                    clip-rule="evenodd"></path>
+                                            </svg>
+                                            Thanh toán được xác nhận ngay lập tức. Hỗ trợ 24/7 và bảo mật đa tầng.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <% } else { %>
+                                <!-- COD Info -->
+                                <div class="bg-white shadow-lg rounded-2xl p-6 border border-emerald-200">
+                                    <div class="flex items-start gap-3">
+                                        <div
+                                            class="flex-shrink-0 w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
+                                            <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4">
+                                                </path>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-bold text-gray-900">Thanh toán khi nhận hàng</h3>
+                                            <p class="text-sm text-gray-600 mt-1">
+                                                Bạn sẽ thanh toán bằng tiền mặt khi shipper giao hàng tận nơi.
+                                                Vui lòng chuẩn bị đúng số tiền để việc giao hàng diễn ra thuận lợi.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% } %>
+            </div>
+        </main>
+
+        <!-- Footer (Simplified) -->
+        <footer class="bg-gray-800 text-white py-8 text-center text-sm">
+            <p>&copy; 2026 DDAWNG Store. All rights reserved.</p>
+        </footer>
 </body>
+
 </html>

@@ -7,6 +7,7 @@
     <title>Đăng ký - DDAWNG Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/css/style.css">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 
 <body class="bg-gray-50 flex items-center justify-center min-h-screen py-12 px-4 sm:px-6 lg:px-8">
@@ -71,7 +72,8 @@
                             <div class="space-y-4">
                                 <div>
                                     <label for="name" class="block text-sm font-medium text-gray-700">Họ và tên</label>
-                                    <input id="name" name="name" type="text" required
+                                    <input id="name" name="name" type="text" required pattern="^[^0-9]+$"
+                                        title="Họ và tên không được chứa số"
                                         class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                                         placeholder="Nhập họ và tên">
                                 </div>
@@ -79,6 +81,8 @@
                                 <div>
                                     <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
                                     <input id="email" name="email" type="email" required
+                                        pattern="^[^\s@]+@[^\s@]+\.[^\s@]+$"
+                                        title="Vui lòng nhập định dạng email hợp lệ"
                                         class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                                         placeholder="email@example.com">
                                 </div>
@@ -86,7 +90,8 @@
                                 <div>
                                     <label for="phone" class="block text-sm font-medium text-gray-700">Số điện thoại
                                     </label>
-                                    <input id="phone" name="phone" type="tel"
+                                    <input id="phone" name="phone" type="tel" required pattern="[0-9]{10}"
+                                        minlength="10" maxlength="10" title="Số điện thoại phải bao gồm đúng 10 chữ số"
                                         class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                                         placeholder="Nhập số điện thoại">
                                 </div>
@@ -133,7 +138,7 @@
                                 </div>
                             </div>
 
-                            <div class="flex items-center">
+                            <!-- <div class="flex items-center">
                                 <input id="agree-terms" name="agree-terms" type="checkbox" required
                                     class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
                                 <label for="agree-terms" class="ml-2 block text-sm text-gray-900">
@@ -141,6 +146,11 @@
                                     <a href="#" class="text-indigo-600 hover:text-indigo-500">điều khoản sử dụng</a> và
                                     <a href="#" class="text-indigo-600 hover:text-indigo-500">chính sách bảo mật</a>
                                 </label>
+                            </div> -->
+
+                            <!-- Thêm reCAPTCHA widget -->
+                            <div class="flex justify-center">
+                                <div class="g-recaptcha" data-sitekey="6Lc84d8sAAAAAN4cWVXd9RsJFek15pyuUQHT4X4j"></div>
                             </div>
 
                             <div>

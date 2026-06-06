@@ -106,8 +106,52 @@ router.post('/register', async (req, res) => {
 
     try {
         const { name, email, password, confirmPassword, phone } = req.body;
+        const recaptchaResponse = req.body['g-recaptcha-response'];
 
-        console.log('📊 Parsed data:', { name, email, phone, hasPassword: !!password, hasConfirmPassword: !!confirmPassword });
+        console.log('📊 Parsed data:', { name, email, phone, hasPassword: !!password, hasConfirmPassword: !!confirmPassword, hasRecaptcha: !!recaptchaResponse });
+
+        // Verify reCAPTCHA
+        if (!recaptchaResponse) {
+            console.log('❌ Validation failed: missing reCAPTCHA');
+            return res.render('customer-register', {
+                error: 'Vui lòng xác nhận bạn không phải là robot',
+                success: null
+            });
+        }
+
+        const recaptchaSecretKey = '6Lc84d8sAAAAAFfnHTBDQiHLvCI99KJCje4nHsyR';
+        try {
+            const verifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaSecretKey}&response=${recaptchaResponse}`;
+            const https = require('https');
+            const recaptchaResult = await new Promise((resolve, reject) => {
+                https.request(verifyUrl, { method: 'POST' }, (res) => {
+                    let data = '';
+                    res.on('data', chunk => data += chunk);
+                    res.on('end', () => {
+                        try {
+                            resolve(JSON.parse(data));
+                        } catch (e) {
+                            reject(e);
+                        }
+                    });
+                }).on('error', reject).end();
+            });
+
+            if (!recaptchaResult.success) {
+                console.log('❌ reCAPTCHA verification failed:', recaptchaResult);
+                return res.render('customer-register', {
+                    error: 'Xác thực reCAPTCHA thất bại, vui lòng thử lại',
+                    success: null
+                });
+            }
+            console.log('✅ reCAPTCHA verified successfully');
+        } catch (error) {
+            console.error('❌ reCAPTCHA verification error:', error);
+            return res.render('customer-register', {
+                error: 'Lỗi xác thực hệ thống reCAPTCHA',
+                success: null
+            });
+        }
 
         // Validation
         if (!name || !email || !password) {
@@ -130,6 +174,30 @@ router.post('/register', async (req, res) => {
             console.log('❌ Validation failed: password too short');
             return res.render('customer-register', {
                 error: 'Mật khẩu phải có ít nhất 6 ký tự',
+                success: null
+            });
+        }
+
+        if (/\d/.test(name)) {
+            console.log('❌ Validation failed: name contains numbers');
+            return res.render('customer-register', {
+                error: 'Tên không được chứa số',
+                success: null
+            });
+        }
+
+        if (!/^\S+@\S+\.\S+$/.test(email)) {
+            console.log('❌ Validation failed: invalid email format');
+            return res.render('customer-register', {
+                error: 'Email không hợp lệ',
+                success: null
+            });
+        }
+
+        if (!/^\d{10}$/.test(phone)) {
+            console.log('❌ Validation failed: invalid phone format');
+            return res.render('customer-register', {
+                error: 'Số điện thoại phải bao gồm đúng 10 chữ số',
                 success: null
             });
         }

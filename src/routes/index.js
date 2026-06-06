@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const crypto = require('crypto');
+const https = require('https');
 
 // Home page
 router.get('/', async (req, res) => {
@@ -24,7 +26,7 @@ router.get('/', async (req, res) => {
             queryParams.push(categoryId);
         }
 
-        productsQuery += ' ORDER BY p.created_at DESC LIMIT 12';
+        productsQuery += ' ORDER BY p.created_at DESC LIMIT 16';
 
         const [products] = await req.sequelize.query(productsQuery, {
             replacements: queryParams
@@ -99,77 +101,84 @@ router.get('/products', async (req, res) => {
     console.log('🛍️ Products page requested');
     try {
         const { search, category, minPrice, maxPrice, size, color, sort } = req.query;
+        const page = parseInt(req.query.page) || 1;
+        const limit = 12;
+        const offset = (page - 1) * limit;
 
-        // Base query - joining with product_variants if size or color is filtered
-        let productsQuery = `
-            SELECT p.*, c.name as category_name,
-                   (SELECT pi.image_url FROM product_images pi WHERE pi.product_id = p.id AND pi.is_primary = 1 LIMIT 1) as image_url
-            FROM products p
-            LEFT JOIN categories c ON p.category_id = c.id
-        `;
-
-        // If sorting or filtering by size/color, we might need a join
+        // Build base JOINs
+        let joins = `LEFT JOIN categories c ON p.category_id = c.id`;
         if (size || color) {
-            productsQuery += `
-                INNER JOIN product_variants pv ON p.id = pv.product_id
-            `;
+            joins += ` INNER JOIN product_variants pv ON p.id = pv.product_id`;
         }
 
-        productsQuery += ` WHERE p.status = 'active' `;
-
+        // Build WHERE clauses
+        let whereClauses = ` WHERE p.status = 'active'`;
         let queryParams = [];
 
         if (search) {
-            productsQuery += ' AND (p.name LIKE ? OR p.description LIKE ?)';
+            whereClauses += ' AND (p.name LIKE ? OR p.description LIKE ?)';
             queryParams.push(`%${search}%`, `%${search}%`);
         }
 
         if (category) {
-            // Support multiple categories
             const categoriesInfo = Array.isArray(category) ? category : [category];
-            productsQuery += ` AND p.category_id IN (${categoriesInfo.map(() => '?').join(',')})`;
+            whereClauses += ` AND p.category_id IN (${categoriesInfo.map(() => '?').join(',')})`;
             queryParams.push(...categoriesInfo);
         }
 
         if (minPrice) {
-            productsQuery += ' AND p.price >= ?';
+            whereClauses += ' AND p.price >= ?';
             queryParams.push(minPrice);
         }
 
         if (maxPrice) {
-            productsQuery += ' AND p.price <= ?';
+            whereClauses += ' AND p.price <= ?';
             queryParams.push(maxPrice);
         }
 
         if (size) {
             const sizesInfo = Array.isArray(size) ? size : [size];
-            productsQuery += ` AND pv.size_id IN (${sizesInfo.map(() => '?').join(',')})`;
+            whereClauses += ` AND pv.size_id IN (${sizesInfo.map(() => '?').join(',')})`;
             queryParams.push(...sizesInfo);
         }
 
         if (color) {
             const colorsInfo = Array.isArray(color) ? color : [color];
-            productsQuery += ` AND pv.color_id IN (${colorsInfo.map(() => '?').join(',')})`;
+            whereClauses += ` AND pv.color_id IN (${colorsInfo.map(() => '?').join(',')})`;
             queryParams.push(...colorsInfo);
         }
 
-        // Group by product ID if we joined with variants to avoid duplicate products in the list
+        // Count total matching products for pagination
+        let countQuery = `SELECT COUNT(DISTINCT p.id) as total FROM products p ${joins} ${whereClauses}`;
+        const [[{ total }]] = await req.sequelize.query(countQuery, {
+            replacements: queryParams
+        });
+        const totalPages = Math.ceil(total / limit) || 1;
+
+        // Main Query
+        let productsQuery = `
+            SELECT p.*, c.name as category_name,
+                   (SELECT pi.image_url FROM product_images pi WHERE pi.product_id = p.id AND pi.is_primary = 1 LIMIT 1) as image_url
+            FROM products p
+            ${joins}
+            ${whereClauses}
+        `;
+
         if (size || color) {
             productsQuery += ' GROUP BY p.id';
         }
 
-        // Sorting
         if (sort === 'price_asc') {
             productsQuery += ' ORDER BY p.price ASC';
         } else if (sort === 'price_desc') {
             productsQuery += ' ORDER BY p.price DESC';
         } else {
-            // default to newest
             productsQuery += ' ORDER BY p.created_at DESC';
         }
 
+        productsQuery += ' LIMIT ? OFFSET ?';
         const [products] = await req.sequelize.query(productsQuery, {
-            replacements: queryParams
+            replacements: [...queryParams, limit, offset]
         });
 
         // Fetch data for filter sidebar
@@ -206,7 +215,9 @@ router.get('/products', async (req, res) => {
             sizes: sizes || [],
             colors: colors || [],
             customer: customer,
-            query: req.query // Pass query params back to view to keep filter state
+            query: req.query, // Pass query params back to view to keep filter state
+            currentPage: page,
+            totalPages: totalPages
         });
 
     } catch (error) {
@@ -1000,6 +1011,144 @@ router.post('/checkout', async (req, res) => {
             await req.sequelize.query('COMMIT');
 
             console.log('✅ Checkout successful. Order ID:', orderId);
+
+            if (paymentMethod === 'momo') {
+                const partnerCode = "MOMO";
+                const accessKey = "F8BBA842ECF85";
+                const secretkey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
+                const requestId = partnerCode + new Date().getTime();
+                const momoOrderId = orderId + "_" + new Date().getTime();
+                const orderInfo = "Thanh toan don hang " + orderId;
+                const redirectUrl = `${req.protocol}://${req.get('host')}/checkout/success?orderId=${orderId}&method=momo`;
+                const ipnUrl = `${req.protocol}://${req.get('host')}/api/momo-ipn`;
+                const amount = totalAmount.toString();
+                const requestType = "captureWallet";
+                const extraData = ""; 
+
+                const rawSignature = "accessKey="+accessKey+"&amount=" + amount+"&extraData=" + extraData+"&ipnUrl=" + ipnUrl+"&orderId=" + momoOrderId+"&orderInfo=" + orderInfo+"&partnerCode=" + partnerCode +"&redirectUrl=" + redirectUrl+"&requestId=" + requestId+"&requestType=" + requestType;
+                
+                const signature = crypto.createHmac('sha256', secretkey)
+                    .update(rawSignature)
+                    .digest('hex');
+
+                const requestBody = JSON.stringify({
+                    partnerCode : partnerCode,
+                    accessKey : accessKey,
+                    requestId : requestId,
+                    amount : amount,
+                    orderId : momoOrderId,
+                    orderInfo : orderInfo,
+                    redirectUrl : redirectUrl,
+                    ipnUrl : ipnUrl,
+                    extraData : extraData,
+                    requestType : requestType,
+                    signature : signature,
+                    lang: 'vi'
+                });
+
+                const options = {
+                    hostname: 'test-payment.momo.vn',
+                    port: 443,
+                    path: '/v2/gateway/api/create',
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Content-Length': Buffer.byteLength(requestBody)
+                    }
+                };
+
+                const payUrl = await new Promise((resolve, reject) => {
+                    const reqMoMo = https.request(options, resMoMo => {
+                        let body = '';
+                        resMoMo.setEncoding('utf8');
+                        resMoMo.on('data', (chunk) => {
+                            body += chunk;
+                        });
+                        resMoMo.on('end', () => {
+                            try {
+                                const result = JSON.parse(body);
+                                if (result.payUrl) {
+                                    resolve(result.payUrl);
+                                } else {
+                                    reject(new Error(result.message || 'MoMo error'));
+                                }
+                            } catch (e) {
+                                reject(e);
+                            }
+                        });
+                    });
+
+                    reqMoMo.on('error', (e) => {
+                        reject(e);
+                    });
+
+                    reqMoMo.write(requestBody);
+                    reqMoMo.end();
+                });
+
+                return res.json({
+                    success: true,
+                    message: 'Đang chuyển hướng đến MoMo...',
+                    orderId: orderId,
+                    cartCount: remainingCount,
+                    payUrl: payUrl
+                });
+            }
+
+            if (paymentMethod === 'vnpay') {
+                const tmnCode = "ZMG3BK1H";
+                const secretKey = "HT0PBH6QY3PE9RJIO73T73SKZVRUEDP2";
+                let vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
+                const returnUrl = `${req.protocol}://${req.get('host')}/checkout/success?orderId=${orderId}&method=vnpay`;
+
+                const date = new Date();
+                const pad = (n) => (n < 10 ? '0' + n : n);
+                const createDate = date.getFullYear().toString() + pad(date.getMonth() + 1) + pad(date.getDate()) + pad(date.getHours()) + pad(date.getMinutes()) + pad(date.getSeconds());
+                const vnpOrderId = orderId + "_" + createDate;
+                
+                const amount = totalAmount;
+                const orderInfo = "Thanh toan don hang " + orderId;
+                const orderType = "billpayment";
+                const locale = "vn";
+                const currCode = 'VND';
+                const ipAddr = req.headers['x-forwarded-for'] ||
+                               req.connection?.remoteAddress ||
+                               req.socket?.remoteAddress ||
+                               '127.0.0.1';
+                
+                let vnp_Params = {};
+                vnp_Params['vnp_Version'] = '2.1.0';
+                vnp_Params['vnp_Command'] = 'pay';
+                vnp_Params['vnp_TmnCode'] = tmnCode;
+                vnp_Params['vnp_Locale'] = locale;
+                vnp_Params['vnp_CurrCode'] = currCode;
+                vnp_Params['vnp_TxnRef'] = vnpOrderId;
+                vnp_Params['vnp_OrderInfo'] = orderInfo;
+                vnp_Params['vnp_OrderType'] = orderType;
+                vnp_Params['vnp_Amount'] = amount * 100;
+                vnp_Params['vnp_ReturnUrl'] = returnUrl;
+                vnp_Params['vnp_IpAddr'] = ipAddr;
+                vnp_Params['vnp_CreateDate'] = createDate;
+
+                let sortedVnpParams = {};
+                for (const key of Object.keys(vnp_Params).sort()) {
+                    sortedVnpParams[key] = encodeURIComponent(String(vnp_Params[key])).replace(/%20/g, '+');
+                }
+                const querystring = require('querystring');
+                const signData = querystring.stringify(sortedVnpParams, '&', '=', { encodeURIComponent: (str) => str });
+                const hmac = crypto.createHmac("sha512", secretKey);
+                const signed = hmac.update(Buffer.from(signData, 'utf-8')).digest("hex"); 
+                vnpUrl += '?' + signData + '&vnp_SecureHash=' + signed;
+
+                return res.json({
+                    success: true,
+                    message: 'Đang chuyển hướng đến VNPay...',
+                    orderId: orderId,
+                    cartCount: remainingCount,
+                    payUrl: vnpUrl
+                });
+            }
+
             res.json({
                 success: true,
                 message: 'Đặt hàng thành công!',
@@ -1029,6 +1178,18 @@ router.get('/checkout/success', async (req, res) => {
         if (!orderId) {
             return res.redirect('/');
         }
+
+        // Cập nhật trạng thái thanh toán thành công dựa trên callback
+        if (method === 'momo' && req.query.resultCode === '0') {
+            await req.sequelize.query(`UPDATE orders SET payment_status = 'paid' WHERE id = ?`, {
+                replacements: [orderId]
+            });
+        } else if (method === 'vnpay' && req.query.vnp_ResponseCode === '00') {
+            await req.sequelize.query(`UPDATE orders SET payment_status = 'paid' WHERE id = ?`, {
+                replacements: [orderId]
+            });
+        }
+
         res.render('checkout-success', {
             orderId: orderId,
             method: method,
@@ -1037,6 +1198,76 @@ router.get('/checkout/success', async (req, res) => {
     } catch (error) {
         console.error('Error rendering checkout success:', error);
         res.redirect('/');
+    }
+});
+
+// GET Contact Page
+router.get('/contact', async (req, res) => {
+    console.log('✉️ Contact page requested');
+    try {
+        // Retrieve customer session if logged in
+        let customer = null;
+        if (req.session && req.session.customerId) {
+            try {
+                const [customerData] = await req.sequelize.query(`
+                    SELECT id, full_name, email, phone FROM users WHERE id = ? AND role = 'user'
+                `, {
+                    replacements: [req.session.customerId]
+                });
+                if (customerData.length > 0) {
+                    const user = customerData[0];
+                    customer = {
+                        id: user.id,
+                        name: user.full_name,
+                        email: user.email,
+                        phone: user.phone
+                    };
+                }
+            } catch (error) {
+                console.error('Error loading customer data for contact page:', error);
+            }
+        }
+
+        res.render('contact', {
+            customer: customer
+        });
+    } catch (error) {
+        console.error('Error loading contact page:', error);
+        res.status(500).render('error', { message: 'Lỗi khi tải trang liên hệ' });
+    }
+});
+
+// POST Contact Message (AJAX handler)
+router.post('/contact', async (req, res) => {
+    try {
+        const { fullName, email, phone, subject, message } = req.body;
+        console.log('✉️ Received contact message:', { fullName, email, phone, subject, message });
+
+        if (!fullName || !email || !subject || !message) {
+            return res.status(400).json({
+                success: false,
+                message: 'Vui lòng điền đầy đủ các thông tin bắt buộc (*)'
+            });
+        }
+
+        // Insert message into database
+        await req.sequelize.query(`
+            INSERT INTO contact_messages (full_name, email, phone, subject, message, status, created_at, updated_at)
+            VALUES (?, ?, ?, ?, ?, 'unread', NOW(), NOW())
+        `, {
+            replacements: [fullName, email, phone || null, subject, message]
+        });
+
+        res.json({
+            success: true,
+            message: 'Gửi tin nhắn thành công! DDAWNG Store sẽ phản hồi bạn trong thời gian sớm nhất.'
+        });
+    } catch (error) {
+        console.error('Error handling contact submission:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Lỗi hệ thống khi gửi lời nhắn. Vui lòng thử lại sau.'
+        });
     }
 });
 

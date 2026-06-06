@@ -1,96 +1,149 @@
-<!-- Header -->
-<header class="bg-white shadow-sm relative z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex items-center">
-                <!-- Mobile menu button -->
-                <button id="admin-mobile-menu-btn" class="md:hidden p-2 -ml-2 mr-2 text-gray-400 hover:text-gray-500 hover:bg-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
-                    <span class="sr-only">Mở menu chính</span>
-                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                </button>
-                <h1 class="text-2xl font-bold text-indigo-600">DDAWNG Admin</h1>
-                <nav class="hidden md:flex space-x-8 ml-10">
-                    <a href="/admin/dashboard"
-                        class="<% if (typeof activePage !== 'undefined' && activePage === 'dashboard') { %>text-indigo-600 border-b-2 border-indigo-500 pb-4<% } else { %>text-gray-700 hover:text-indigo-600<% } %>">Dashboard</a>
-                    <a href="/admin/products"
-                        class="<% if (typeof activePage !== 'undefined' && activePage === 'products') { %>text-indigo-600 border-b-2 border-indigo-500 pb-4<% } else { %>text-gray-700 hover:text-indigo-600<% } %>">Sản
-                        phẩm</a>
-                    <a href="/admin/orders"
-                        class="<% if (typeof activePage !== 'undefined' && activePage === 'orders') { %>text-indigo-600 border-b-2 border-indigo-500 pb-4<% } else { %>text-gray-700 hover:text-indigo-600<% } %>">Đơn
-                        hàng</a>
-                    <a href="/admin/customers"
-                        class="<% if (typeof activePage !== 'undefined' && activePage === 'customers') { %>text-indigo-600 border-b-2 border-indigo-500 pb-4<% } else { %>text-gray-700 hover:text-indigo-600<% } %>">Khách
-                        hàng</a>
-                    <a href="/admin/coupons"
-                        class="<% if (typeof activePage !== 'undefined' && activePage === 'coupons') { %>text-indigo-600 border-b-2 border-indigo-500 pb-4<% } else { %>text-gray-700 hover:text-indigo-600<% } %>">Mã
-                        giảm giá</a>
-                </nav>
-            </div>
-            <div class="flex items-center space-x-4">
-                <span class="text-sm text-gray-700">Xin chào, Admin</span>
-                <div class="relative">
-                    <button class="text-gray-500 hover:text-indigo-600 transition relative" id="global-notification-btn"
-                        title="Thông báo đơn hàng mới">
-                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                        </svg>
-                        <!-- Badge số lượng -->
-                        <span id="global-new-orders-badge"
-                            class="absolute -top-2 -right-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full hidden">
-                            0
-                        </span>
-                    </button>
-                    <!-- Popup báo đơn -->
-                    <div id="global-notification-dropdown"
-                        class="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg overflow-hidden z-[100] border border-gray-100 hidden">
-                        <div
-                            class="py-2 px-4 bg-gray-50 border-b border-gray-100 text-sm font-semibold text-gray-700 flex justify-between items-center">
-                            Thông báo mới
-                            <span id="global-new-orders-text"
-                                class="bg-red-100 text-red-600 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
-                        </div>
-                        <div id="global-notification-list" class="max-h-64 overflow-y-auto divide-y divide-gray-100">
-                            <div class="p-4 text-center text-gray-500 text-sm">Chưa có thông báo nào</div>
-                        </div>
-                        <!-- <div class="p-2 bg-gray-50 border-t border-gray-100 text-center">
-                                <a href="/admin/orders" class="text-indigo-600 text-xs hover:underline">Xem tất cả đơn hàng</a>
-                            </div> -->
-                    </div>
-                </div>
-                <a href="/admin/logout" class="text-gray-500 hover:text-red-600 transition" title="Đăng xuất">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                    </svg>
-                </a>
-            </div>
-        </div>
+<!-- Sidebar Layout Styling -->
+<style>
+    @media (min-width: 768px) {
+        body {
+            padding-left: 16rem; /* Shifts main content to the right by w-64 */
+        }
+    }
+</style>
+
+<!-- Mobile Sidebar Backdrop -->
+<div id="admin-sidebar-backdrop" class="fixed inset-0 bg-slate-900/50 z-40 hidden md:hidden transition-opacity duration-200"></div>
+
+<!-- Sidebar Navigation -->
+<aside id="admin-sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-slate-300 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out flex flex-col border-r border-slate-800">
+    <!-- Brand Header -->
+    <div class="h-16 flex items-center justify-between px-6 border-b border-slate-800 bg-slate-950 shrink-0">
+        <h1 class="text-xl font-bold text-white flex items-center gap-2">
+            <svg class="h-6 w-6 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+            <span>DDAWNG Admin</span>
+        </h1>
+        <!-- Close button for mobile -->
+        <button id="admin-sidebar-close-btn" class="md:hidden p-1 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 focus:outline-none" title="Đóng menu">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
     </div>
-    <!-- Mobile Menu -->
-    <div id="admin-mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200 shadow-lg absolute w-full left-0 top-full">
-        <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <a href="/admin/dashboard" class="block px-3 py-2 rounded-md text-base font-medium <% if (typeof activePage !== 'undefined' && activePage === 'dashboard') { %>text-indigo-600 bg-indigo-50<% } else { %>text-gray-700 hover:text-indigo-600 hover:bg-gray-50<% } %>">Dashboard</a>
-            <a href="/admin/products" class="block px-3 py-2 rounded-md text-base font-medium <% if (typeof activePage !== 'undefined' && activePage === 'products') { %>text-indigo-600 bg-indigo-50<% } else { %>text-gray-700 hover:text-indigo-600 hover:bg-gray-50<% } %>">Sản phẩm</a>
-            <a href="/admin/orders" class="block px-3 py-2 rounded-md text-base font-medium <% if (typeof activePage !== 'undefined' && activePage === 'orders') { %>text-indigo-600 bg-indigo-50<% } else { %>text-gray-700 hover:text-indigo-600 hover:bg-gray-50<% } %>">Đơn hàng</a>
-            <a href="/admin/customers" class="block px-3 py-2 rounded-md text-base font-medium <% if (typeof activePage !== 'undefined' && activePage === 'customers') { %>text-indigo-600 bg-indigo-50<% } else { %>text-gray-700 hover:text-indigo-600 hover:bg-gray-50<% } %>">Khách hàng</a>
-            <a href="/admin/coupons" class="block px-3 py-2 rounded-md text-base font-medium <% if (typeof activePage !== 'undefined' && activePage === 'coupons') { %>text-indigo-600 bg-indigo-50<% } else { %>text-gray-700 hover:text-indigo-600 hover:bg-gray-50<% } %>">Mã giảm giá</a>
+
+    <!-- Navigation links -->
+    <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-1.5">
+        <a href="/admin/dashboard"
+            class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors group <% if (typeof activePage !== 'undefined' && activePage === 'dashboard') { %>bg-indigo-600 text-white font-semibold shadow-sm<% } else { %>text-slate-300 hover:bg-slate-800/60 hover:text-white<% } %>">
+            <svg class="mr-3 h-5 w-5 shrink-0 <% if (typeof activePage !== 'undefined' && activePage === 'dashboard') { %>text-white<% } else { %>text-slate-400 group-hover:text-white<% } %>" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z" />
+            </svg>
+            Dashboard
+        </a>
+        <a href="/admin/products"
+            class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors group <% if (typeof activePage !== 'undefined' && activePage === 'products') { %>bg-indigo-600 text-white font-semibold shadow-sm<% } else { %>text-slate-300 hover:bg-slate-800/60 hover:text-white<% } %>">
+            <svg class="mr-3 h-5 w-5 shrink-0 <% if (typeof activePage !== 'undefined' && activePage === 'products') { %>text-white<% } else { %>text-slate-400 group-hover:text-white<% } %>" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+            Sản phẩm
+        </a>
+        <a href="/admin/orders"
+            class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors group <% if (typeof activePage !== 'undefined' && activePage === 'orders') { %>bg-indigo-600 text-white font-semibold shadow-sm<% } else { %>text-slate-300 hover:bg-slate-800/60 hover:text-white<% } %>">
+            <svg class="mr-3 h-5 w-5 shrink-0 <% if (typeof activePage !== 'undefined' && activePage === 'orders') { %>text-white<% } else { %>text-slate-400 group-hover:text-white<% } %>" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+            </svg>
+            Đơn hàng
+        </a>
+        <a href="/admin/customers"
+            class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors group <% if (typeof activePage !== 'undefined' && activePage === 'customers') { %>bg-indigo-600 text-white font-semibold shadow-sm<% } else { %>text-slate-300 hover:bg-slate-800/60 hover:text-white<% } %>">
+            <svg class="mr-3 h-5 w-5 shrink-0 <% if (typeof activePage !== 'undefined' && activePage === 'customers') { %>text-white<% } else { %>text-slate-400 group-hover:text-white<% } %>" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            Khách hàng
+        </a>
+        <a href="/admin/coupons"
+            class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors group <% if (typeof activePage !== 'undefined' && activePage === 'coupons') { %>bg-indigo-600 text-white font-semibold shadow-sm<% } else { %>text-slate-300 hover:bg-slate-800/60 hover:text-white<% } %>">
+            <svg class="mr-3 h-5 w-5 shrink-0 <% if (typeof activePage !== 'undefined' && activePage === 'coupons') { %>text-white<% } else { %>text-slate-400 group-hover:text-white<% } %>" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            Mã giảm giá
+        </a>
+        <a href="/admin/contacts"
+            class="flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-colors group <% if (typeof activePage !== 'undefined' && activePage === 'contacts') { %>bg-indigo-600 text-white font-semibold shadow-sm<% } else { %>text-slate-300 hover:bg-slate-800/60 hover:text-white<% } %>">
+            <svg class="mr-3 h-5 w-5 shrink-0 <% if (typeof activePage !== 'undefined' && activePage === 'contacts') { %>text-white<% } else { %>text-slate-400 group-hover:text-white<% } %>" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+            Ý kiến khách hàng
+        </a>
+    </nav>
+</aside>
+
+<!-- Topbar Header -->
+<header class="sticky top-0 z-30 flex h-16 shrink-0 items-center justify-between border-b border-gray-200 bg-white px-4 shadow-sm sm:px-6 lg:px-8">
+    <div class="flex items-center gap-4">
+        <!-- Mobile Menu Toggle Button -->
+        <button id="admin-sidebar-toggle-btn" class="md:hidden p-2 -ml-2 text-gray-500 hover:text-gray-600 hover:bg-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500">
+            <span class="sr-only">Mở menu</span>
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+        <h2 class="text-lg font-semibold text-gray-800 md:block hidden">Trang quản trị</h2>
+    </div>
+
+    <!-- Utilities -->
+    <div class="flex items-center space-x-4">
+        <span class="text-sm text-gray-700">Xin chào, Admin</span>
+        <div class="relative">
+            <button class="text-gray-500 hover:text-indigo-600 transition relative" id="global-notification-btn"
+                title="Thông báo đơn hàng mới">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                <!-- Badge số lượng -->
+                <span id="global-new-orders-badge"
+                    class="absolute -top-2 -right-2 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full hidden">
+                    0
+                </span>
+            </button>
+            <!-- Popup báo đơn -->
+            <div id="global-notification-dropdown"
+                class="absolute right-0 mt-2 w-80 bg-white rounded-md shadow-lg overflow-hidden z-[100] border border-gray-100 hidden">
+                <div class="py-2 px-4 bg-gray-50 border-b border-gray-100 text-sm font-semibold text-gray-700 flex justify-between items-center">
+                    Thông báo mới
+                    <span id="global-new-orders-text"
+                        class="bg-red-100 text-red-600 text-xs px-2 py-0.5 rounded-full font-bold">0</span>
+                </div>
+                <div id="global-notification-list" class="max-h-64 overflow-y-auto divide-y divide-gray-100">
+                    <div class="p-4 text-center text-gray-500 text-sm">Chưa có thông báo nào</div>
+                </div>
+            </div>
         </div>
+        <a href="/admin/logout" class="text-gray-500 hover:text-red-600 transition" title="Đăng xuất">
+            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+        </a>
     </div>
 </header>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const adminMobileMenuBtn = document.getElementById('admin-mobile-menu-btn');
-        const adminMobileMenu = document.getElementById('admin-mobile-menu');
-        if (adminMobileMenuBtn && adminMobileMenu) {
-            adminMobileMenuBtn.addEventListener('click', () => {
-                adminMobileMenu.classList.toggle('hidden');
-            });
+        // Toggle Sidebar on mobile
+        const toggleBtn = document.getElementById('admin-sidebar-toggle-btn');
+        const sidebar = document.getElementById('admin-sidebar');
+        const backdrop = document.getElementById('admin-sidebar-backdrop');
+        const closeBtn = document.getElementById('admin-sidebar-close-btn');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            backdrop.classList.toggle('hidden');
         }
 
+        if (toggleBtn) toggleBtn.addEventListener('click', toggleSidebar);
+        if (backdrop) backdrop.addEventListener('click', toggleSidebar);
+        if (closeBtn) closeBtn.addEventListener('click', toggleSidebar);
+
+        // Notifications logic
         const notifBtn = document.getElementById('global-notification-btn');
         const dropdown = document.getElementById('global-notification-dropdown');
         const badge = document.getElementById('global-new-orders-badge');

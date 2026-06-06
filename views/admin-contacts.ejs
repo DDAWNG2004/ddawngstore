@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Phản Hồi | DDAWNG Store Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 font-sans antialiased text-gray-900">
+    <%- include('partials/admin-header', { activePage: 'contacts' }) %>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Header Actions -->
+        <div class="sm:flex sm:items-center">
+            <div class="sm:flex-auto">
+                <h1 class="text-2xl font-bold leading-tight text-gray-900 sm:text-3xl sm:truncate">Ý kiến khách hàng</h1>
+                <p class="mt-2 text-sm text-gray-600">Danh sách ý kiến phản hồi, khiếu nại hoặc câu hỏi từ khách hàng gửi qua biểu mẫu liên hệ.</p>
+            </div>
+        </div>
+
+        <!-- Bulk Actions Banner (Hidden by default) -->
+        <div class="mt-6 mb-4 hidden" id="bulkActions">
+            <div class="bg-indigo-50 border border-indigo-200 rounded-2xl p-4 shadow-sm">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <svg class="h-5 w-5 text-indigo-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2" />
+                        </svg>
+                        <span class="text-sm text-indigo-800 font-medium">
+                            Đã chọn <span id="selectedCount" class="font-bold">0</span> phản hồi
+                        </span>
+                    </div>
+                    <div class="flex space-x-3">
+                        <button onclick="bulkDelete()" class="px-4 py-2 bg-red-600 text-white text-sm font-semibold rounded-lg hover:bg-red-700 transition shadow-sm">
+                            Xóa đã chọn
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search and Filter Controls -->
+        <div class="mt-8 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm mb-6">
+            <form id="filterForm" method="GET" action="/admin/contacts" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="md:col-span-2 relative">
+                    <input type="text" name="search" id="searchInput" value="<%= searchQuery %>" placeholder="Tìm tên, email, chủ đề, lời nhắn..."
+                        class="block w-full rounded-xl border-gray-200 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm px-4 py-3 border outline-none transition-all">
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-3">
+                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                </div>
+                <div class="md:col-span-1">
+                    <select name="status" id="statusFilter" onchange="this.form.submit()"
+                        class="block w-full rounded-xl border-gray-200 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm px-3 py-3 border bg-white outline-none">
+                        <option value="all" <%= statusFilter === 'all' ? 'selected' : '' %>>Tất cả trạng thái</option>
+                        <option value="unread" <%= statusFilter === 'unread' ? 'selected' : '' %>>Chưa đọc</option>
+                        <option value="read" <%= statusFilter === 'read' ? 'selected' : '' %>>Đã đọc</option>
+                    </select>
+                </div>
+                <div class="md:col-span-1">
+                    <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-semibold transition shadow-sm flex items-center justify-center gap-2">
+                        <span>Lọc kết quả</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Feedback Messages Table -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-100 table-fixed">
+                    <thead class="bg-gray-50/70">
+                        <tr>
+                            <th scope="col" class="w-12 px-6 py-4 text-left">
+                                <input type="checkbox" id="selectAll" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4">
+                            </th>
+                            <th scope="col" class="w-1/4 px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Khách hàng</th>
+                            <th scope="col" class="w-1/3 px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Nội dung</th>
+                            <th scope="col" class="w-40 px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Ngày gửi</th>
+                            <th scope="col" class="w-32 px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Trạng thái</th>
+                            <th scope="col" class="w-36 px-6 py-4 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100 bg-white">
+                        <% if (contacts && contacts.length > 0) { %>
+                            <% contacts.forEach(msg => { %>
+                                <tr class="hover:bg-gray-50/50 transition-colors" id="row-<%= msg.id %>">
+                                    <td class="px-6 py-4">
+                                        <input type="checkbox" class="msg-checkbox rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4" value="<%= msg.id %>" onchange="updateSelection()">
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="font-semibold text-gray-900"><%= msg.full_name %></div>
+                                        <div class="text-xs text-gray-500 mt-0.5 select-all"><%= msg.email %></div>
+                                        <% if (msg.phone) { %>
+                                            <div class="text-xs text-gray-400 mt-0.5"><%= msg.phone %></div>
+                                        <% } %>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="font-medium text-gray-800 truncate" title="<%= msg.subject %>"><%= msg.subject %></div>
+                                        <div class="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed whitespace-pre-line"><%= msg.message %></div>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-500">
+                                        <%= new Date(msg.created_at).toLocaleString('vi-VN', { hour: '2-digit', minute:'2-digit', day: '2-digit', month: '2-digit', year: 'numeric' }) %>
+                                    </td>
+                                    <td class="px-6 py-4" id="status-badge-<%= msg.id %>">
+                                        <% if (msg.status === 'unread') { %>
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">Chưa đọc</span>
+                                        <% } else { %>
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">Đã đọc</span>
+                                        <% } %>
+                                    </td>
+                                    <td class="px-6 py-4 text-right text-sm font-medium space-x-1 shrink-0">
+                                        <button onclick="viewMessage(<%= JSON.stringify(msg) %>)" class="text-indigo-600 hover:text-indigo-900 p-1.5 hover:bg-indigo-50 rounded-lg transition" title="Xem chi tiết">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
+                                        </button>
+                                        <button onclick="toggleRead(<%= msg.id %>)" id="toggle-btn-<%= msg.id %>" class="text-amber-600 hover:text-amber-900 p-1.5 hover:bg-amber-50 rounded-lg transition" title="<%= msg.status === 'unread' ? 'Đánh dấu đã đọc' : 'Đánh dấu chưa đọc' %>">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 19v-8.93a2 2 0 01.89-1.664l8-5.333a2 2 0 012.22 0l8 5.333A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-2.25-1.5a2 2 0 00-2.22 0l-2.25 1.5" />
+                                            </svg>
+                                        </button>
+                                        <button onclick="deleteMessage(<%= msg.id %>)" class="text-rose-600 hover:text-rose-900 p-1.5 hover:bg-rose-50 rounded-lg transition" title="Xóa">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        <% } else { %>
+                            <tr>
+                                <td colspan="6" class="px-6 py-12 text-center text-gray-500">
+                                    Không tìm thấy ý kiến phản hồi nào.
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Message Details Modal -->
+    <div id="detailsModal" class="fixed inset-0 z-50 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Background backdrop -->
+            <div onclick="closeModal()" class="fixed inset-0 bg-slate-900/50 transition-opacity" aria-hidden="true"></div>
+
+            <!-- Modal panel -->
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-middle bg-white rounded-3xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full border border-gray-100">
+                <div class="bg-indigo-600 px-6 py-4 flex items-center justify-between text-white">
+                    <h3 class="text-lg font-bold" id="modalSubject">Tiêu đề ý kiến</h3>
+                    <button onclick="closeModal()" class="text-indigo-200 hover:text-white transition focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="p-6 space-y-6">
+                    <!-- Sender Details -->
+                    <div class="grid grid-cols-2 gap-4 bg-gray-50 rounded-2xl p-4 text-sm border border-gray-100">
+                        <div>
+                            <span class="text-xs text-gray-400 block font-semibold uppercase tracking-wider">Người gửi</span>
+                            <span class="font-bold text-gray-900" id="modalSenderName">Nguyễn Văn A</span>
+                        </div>
+                        <div>
+                            <span class="text-xs text-gray-400 block font-semibold uppercase tracking-wider">Thời gian</span>
+                            <span class="text-gray-700" id="modalTime">05/06/2026</span>
+                        </div>
+                        <div class="col-span-2">
+                            <span class="text-xs text-gray-400 block font-semibold uppercase tracking-wider">Email</span>
+                            <a href="#" class="font-medium text-indigo-600 hover:underline select-all" id="modalSenderEmail">vana@example.com</a>
+                        </div>
+                        <div class="col-span-2" id="modalPhoneContainer">
+                            <span class="text-xs text-gray-400 block font-semibold uppercase tracking-wider">Số điện thoại</span>
+                            <span class="font-medium text-gray-900" id="modalSenderPhone">0987654321</span>
+                        </div>
+                    </div>
+
+                    <!-- Message Body -->
+                    <div>
+                        <span class="text-xs text-gray-400 block font-semibold uppercase tracking-wider mb-2">Nội dung lời nhắn</span>
+                        <div class="bg-slate-50 border border-slate-100 rounded-2xl p-5 text-gray-700 text-sm leading-relaxed whitespace-pre-wrap select-text max-h-[300px] overflow-y-auto" id="modalMessageContent">
+                            Nội dung chi tiết ở đây...
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-6 py-4 flex justify-between gap-3 border-t border-gray-100">
+                    <button id="modalToggleReadBtn" class="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl transition text-sm shadow-sm">
+                        Đánh dấu đã đọc
+                    </button>
+                    <div class="flex gap-3">
+                        <a id="modalReplyBtn" href="mailto:example@email.com" class="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition text-sm shadow-sm flex items-center gap-1.5">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                            </svg>
+                            <span>Phản hồi qua Email</span>
+                        </a>
+                        <button onclick="closeModal()" class="px-4 py-2.5 border border-gray-300 bg-white hover:bg-gray-100 text-gray-700 font-bold rounded-xl transition text-sm shadow-sm">
+                            Đóng
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        let selectedMessageId = null;
+
+        $(document).ready(function () {
+            // Select all mechanism
+            $('#selectAll').on('change', function () {
+                $('.msg-checkbox').prop('checked', this.checked);
+                updateSelection();
+            });
+        });
+
+        function updateSelection() {
+            const checked = $('.msg-checkbox:checked');
+            const total = $('.msg-checkbox').length;
+            
+            // Sync selectAll checkbox state
+            $('#selectAll').prop('checked', checked.length === total && total > 0);
+
+            if (checked.length > 0) {
+                $('#selectedCount').text(checked.length);
+                $('#bulkActions').removeClass('hidden');
+            } else {
+                $('#bulkActions').addClass('hidden');
+            }
+        }
+
+        // Toggle read/unread status via AJAX
+        function toggleRead(id, callback) {
+            $.ajax({
+                url: `/admin/contacts/toggle-status/${id}`,
+                method: 'POST',
+                success: function (res) {
+                    if (res.success) {
+                        const badge = $(`#status-badge-${id}`);
+                        const btn = $(`#toggle-btn-${id}`);
+                        
+                        if (res.newStatus === 'read') {
+                            badge.html(`<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">Đã đọc</span>`);
+                            btn.attr('title', 'Đánh dấu chưa đọc');
+                        } else {
+                            badge.html(`<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">Chưa đọc</span>`);
+                            btn.attr('title', 'Đánh dấu đã đọc');
+                        }
+
+                        if (callback) callback(res.newStatus);
+                        showToast('Cập nhật trạng thái thành công!', 'success');
+                    } else {
+                        showToast(res.message || 'Lỗi khi cập nhật trạng thái', 'error');
+                    }
+                },
+                error: function () {
+                    showToast('Lỗi kết nối máy chủ.', 'error');
+                }
+            });
+        }
+
+        // Delete message via AJAX
+        function deleteMessage(id) {
+            if (!confirm('Bạn có chắc chắn muốn xóa phản hồi này?')) return;
+
+            $.ajax({
+                url: `/admin/contacts/delete/${id}`,
+                method: 'POST',
+                success: function (res) {
+                    if (res.success) {
+                        $(`#row-${id}`).fadeOut(300, function () {
+                            $(this).remove();
+                            updateSelection();
+                        });
+                        showToast('Đã xóa phản hồi thành công!', 'success');
+                    } else {
+                        showToast(res.message || 'Lỗi khi xóa phản hồi', 'error');
+                    }
+                },
+                error: function () {
+                    showToast('Lỗi kết nối máy chủ.', 'error');
+                }
+            });
+        }
+
+        // Bulk delete via AJAX
+        function bulkDelete() {
+            const ids = $('.msg-checkbox:checked').map(function () {
+                return $(this).val();
+            }).get();
+
+            if (ids.length === 0) return;
+            if (!confirm(`Bạn có chắc chắn muốn xóa ${ids.length} phản hồi đã chọn?`)) return;
+
+            $.ajax({
+                url: '/admin/contacts/bulk-delete',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ ids }),
+                success: function (res) {
+                    if (res.success) {
+                        ids.forEach(id => {
+                            $(`#row-${id}`).fadeOut(300, function () {
+                                $(this).remove();
+                                updateSelection();
+                            });
+                        });
+                        showToast(`Đã xóa thành công ${ids.length} phản hồi!`, 'success');
+                    } else {
+                        showToast(res.message || 'Lỗi khi xóa phản hồi', 'error');
+                    }
+                },
+                error: function () {
+                    showToast('Lỗi kết nối máy chủ.', 'error');
+                }
+            });
+        }
+
+        // View message in Detail Modal
+        function viewMessage(msg) {
+            selectedMessageId = msg.id;
+            
+            // Populate Modal Content
+            $('#modalSubject').text(msg.subject);
+            $('#modalSenderName').text(msg.full_name);
+            $('#modalSenderEmail').text(msg.email).attr('href', `mailto:${msg.email}`);
+            $('#modalTime').text(new Date(msg.created_at).toLocaleString('vi-VN'));
+            
+            if (msg.phone) {
+                $('#modalSenderPhone').text(msg.phone);
+                $('#modalPhoneContainer').show();
+            } else {
+                $('#modalPhoneContainer').hide();
+            }
+
+            $('#modalMessageContent').text(msg.message);
+            $('#modalReplyBtn').attr('href', `mailto:${msg.email}?subject=Re: ${encodeURIComponent(msg.subject)}`);
+
+            // Check if status is unread, if so, trigger auto mark-read and set modal button state
+            const rowStatus = $(`#row-${msg.id}`).find(`#status-badge-${msg.id} span`).text().trim();
+            const isUnread = rowStatus === 'Chưa đọc';
+
+            const toggleBtn = $('#modalToggleReadBtn');
+            if (isUnread) {
+                // Auto mark as read when opened
+                toggleRead(msg.id, function(newStatus) {
+                    toggleBtn.text('Đánh dấu chưa đọc').removeClass('bg-emerald-500 hover:bg-emerald-600').addClass('bg-amber-500 hover:bg-amber-600');
+                });
+            } else {
+                toggleBtn.text('Đánh dấu chưa đọc').removeClass('bg-emerald-500 hover:bg-emerald-600').addClass('bg-amber-500 hover:bg-amber-600');
+            }
+
+            // Bind toggle button inside modal
+            toggleBtn.off('click').on('click', function() {
+                toggleRead(selectedMessageId, function(newStatus) {
+                    if (newStatus === 'read') {
+                        toggleBtn.text('Đánh dấu chưa đọc').removeClass('bg-emerald-500 hover:bg-emerald-600').addClass('bg-amber-500 hover:bg-amber-600');
+                    } else {
+                        toggleBtn.text('Đánh dấu đã đọc').removeClass('bg-amber-500 hover:bg-amber-600').addClass('bg-emerald-500 hover:bg-emerald-600');
+                    }
+                });
+            });
+
+            // Show Modal
+            $('#detailsModal').removeClass('hidden');
+        }
+
+        function closeModal() {
+            $('#detailsModal').addClass('hidden');
+            selectedMessageId = null;
+        }
+
+        // Toast Helper
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `fixed bottom-4 right-4 p-4 rounded-xl shadow-lg z-50 text-white font-medium text-sm transition-all duration-300 transform translate-y-10 opacity-0 flex items-center gap-2 ${
+                type === 'success' ? 'bg-emerald-500' : 'bg-red-500'
+            }`;
+            
+            const icon = type === 'success' 
+                ? `<svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`
+                : `<svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+            
+            toast.innerHTML = icon + `<span>${message}</span>`;
+            
+            document.body.appendChild(toast);
+            
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-10', 'opacity-0');
+            });
+            
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>

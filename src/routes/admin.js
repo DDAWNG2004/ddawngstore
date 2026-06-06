@@ -1252,8 +1252,23 @@ router.post('/coupons/add', adminAuth, async (req, res) => {
             return dt.replace('T', ' ') + (dt.length === 16 ? ':00' : '');
         };
 
-        valid_from = formatDateTime(valid_from);
-        valid_until = formatDateTime(valid_until);
+        const parsedDiscountValue = parseFloat(discount_value);
+
+        // Validation: Percentage discount cannot be greater than 100%
+        if (discount_type === 'percent' && parsedDiscountValue > 100) {
+            return res.redirect('/admin/coupons?error=' + encodeURIComponent('Mức giảm phần trăm không được lớn hơn 100%'));
+        }
+
+        const formattedValidFrom = formatDateTime(valid_from);
+        const formattedValidUntil = formatDateTime(valid_until);
+
+        // Validation: Start date must be before end date
+        if (formattedValidFrom && formattedValidUntil && new Date(formattedValidFrom) >= new Date(formattedValidUntil)) {
+            return res.redirect('/admin/coupons?error=' + encodeURIComponent('Ngày bắt đầu phải trước ngày kết thúc'));
+        }
+
+        valid_from = formattedValidFrom;
+        valid_until = formattedValidUntil;
         usage_limit = usage_limit ? parseInt(usage_limit) : null;
         min_purchase_amount = min_purchase_amount ? parseFloat(min_purchase_amount) : 0;
 
@@ -1261,7 +1276,7 @@ router.post('/coupons/add', adminAuth, async (req, res) => {
             INSERT INTO coupons (code, discount_type, discount_value, min_purchase_amount, valid_from, valid_until, usage_limit, is_active)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         `, {
-            replacements: [code.toUpperCase(), discount_type, parseFloat(discount_value), min_purchase_amount, valid_from, valid_until, usage_limit, is_active === '1']
+            replacements: [code.toUpperCase(), discount_type, parsedDiscountValue, min_purchase_amount, valid_from, valid_until, usage_limit, is_active === '1']
         });
 
         res.redirect('/admin/coupons?success=1');
@@ -1280,8 +1295,23 @@ router.post('/coupons/edit/:id', adminAuth, async (req, res) => {
             return dt.replace('T', ' ') + (dt.length === 16 ? ':00' : '');
         };
 
-        valid_from = formatDateTime(valid_from);
-        valid_until = formatDateTime(valid_until);
+        const parsedDiscountValue = parseFloat(discount_value);
+
+        // Validation: Percentage discount cannot be greater than 100%
+        if (discount_type === 'percent' && parsedDiscountValue > 100) {
+            return res.redirect('/admin/coupons?error=' + encodeURIComponent('Mức giảm phần trăm không được lớn hơn 100%'));
+        }
+
+        const formattedValidFrom = formatDateTime(valid_from);
+        const formattedValidUntil = formatDateTime(valid_until);
+
+        // Validation: Start date must be before end date
+        if (formattedValidFrom && formattedValidUntil && new Date(formattedValidFrom) >= new Date(formattedValidUntil)) {
+            return res.redirect('/admin/coupons?error=' + encodeURIComponent('Ngày bắt đầu phải trước ngày kết thúc'));
+        }
+
+        valid_from = formattedValidFrom;
+        valid_until = formattedValidUntil;
         usage_limit = usage_limit ? parseInt(usage_limit) : null;
         min_purchase_amount = min_purchase_amount ? parseFloat(min_purchase_amount) : 0;
 
@@ -1290,7 +1320,7 @@ router.post('/coupons/edit/:id', adminAuth, async (req, res) => {
             SET discount_type = ?, discount_value = ?, min_purchase_amount = ?, valid_from = ?, valid_until = ?, usage_limit = ?, is_active = ?
             WHERE id = ?
         `, {
-            replacements: [discount_type, parseFloat(discount_value), min_purchase_amount, valid_from, valid_until, usage_limit, is_active === '1', req.params.id]
+            replacements: [discount_type, parsedDiscountValue, min_purchase_amount, valid_from, valid_until, usage_limit, is_active === '1', req.params.id]
         });
 
         res.redirect('/admin/coupons?success=1');
@@ -1364,6 +1394,106 @@ router.post('/customers/bulk-delete', adminAuth, async (req, res) => {
     } catch (error) {
         console.error('Lỗi bulk delete customers:', error);
         res.status(500).json({ success: false, message: 'Lỗi khi xóa khách hàng', error: error.message });
+    }
+});
+
+// GET Contact Messages list
+router.get('/contacts', adminAuth, async (req, res) => {
+    try {
+        const statusFilter = req.query.status || 'all';
+        const searchQuery = req.query.search || '';
+
+        let query = 'SELECT * FROM contact_messages WHERE 1=1';
+        const replacements = [];
+
+        if (statusFilter !== 'all') {
+            query += ' AND status = ?';
+            replacements.push(statusFilter);
+        }
+
+        if (searchQuery) {
+            query += ' AND (full_name LIKE ? OR email LIKE ? OR subject LIKE ? OR message LIKE ?)';
+            const wildcard = `%${searchQuery}%`;
+            replacements.push(wildcard, wildcard, wildcard, wildcard);
+        }
+
+        query += ' ORDER BY created_at DESC';
+
+        const [contacts] = await req.sequelize.query(query, { replacements });
+
+        res.render('admin-contacts', {
+            contacts,
+            statusFilter,
+            searchQuery,
+            activePage: 'contacts',
+            user: req.session.user,
+            title: 'Quản lý phản hồi khách hàng'
+        });
+    } catch (error) {
+        console.error('Error loading contact messages:', error);
+        res.status(500).render('error', { message: 'Lỗi khi tải danh sách phản hồi' });
+    }
+});
+
+// POST mark contact message as read/unread
+router.post('/contacts/toggle-status/:id', adminAuth, async (req, res) => {
+    try {
+        const messageId = req.params.id;
+        
+        // Get current status
+        const [messages] = await req.sequelize.query('SELECT status FROM contact_messages WHERE id = ?', {
+            replacements: [messageId]
+        });
+
+        if (messages.length === 0) {
+            return res.status(404).json({ success: false, message: 'Không tìm thấy phản hồi' });
+        }
+
+        const newStatus = messages[0].status === 'unread' ? 'read' : 'unread';
+
+        await req.sequelize.query('UPDATE contact_messages SET status = ?, updated_at = NOW() WHERE id = ?', {
+            replacements: [newStatus, messageId]
+        });
+
+        res.json({ success: true, message: 'Đã cập nhật trạng thái', newStatus });
+    } catch (error) {
+        console.error('Error toggling contact status:', error);
+        res.status(500).json({ success: false, message: 'Lỗi hệ thống khi cập nhật trạng thái' });
+    }
+});
+
+// POST delete contact message
+router.post('/contacts/delete/:id', adminAuth, async (req, res) => {
+    try {
+        const messageId = req.params.id;
+
+        await req.sequelize.query('DELETE FROM contact_messages WHERE id = ?', {
+            replacements: [messageId]
+        });
+
+        res.json({ success: true, message: 'Đã xóa phản hồi thành công' });
+    } catch (error) {
+        console.error('Error deleting contact message:', error);
+        res.status(500).json({ success: false, message: 'Lỗi hệ thống khi xóa phản hồi' });
+    }
+});
+
+// POST bulk delete contact messages
+router.post('/contacts/bulk-delete', adminAuth, async (req, res) => {
+    try {
+        const { ids } = req.body;
+        if (!ids || !Array.isArray(ids) || ids.length === 0) {
+            return res.status(400).json({ success: false, message: 'Không có phản hồi nào được chọn' });
+        }
+
+        await req.sequelize.query('DELETE FROM contact_messages WHERE id IN (?)', {
+            replacements: [ids]
+        });
+
+        res.json({ success: true, message: 'Đã xóa các phản hồi được chọn' });
+    } catch (error) {
+        console.error('Error bulk deleting contact messages:', error);
+        res.status(500).json({ success: false, message: 'Lỗi hệ thống khi xóa phản hồi' });
     }
 });
 
